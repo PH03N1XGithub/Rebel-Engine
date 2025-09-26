@@ -1,0 +1,58 @@
+# Visual Studio temporary files, build results, and
+# user-specific files
+*.obj
+*.exe
+*.pdb
+*.ilk
+*.idb
+*.ipch
+*.iobj
+*.iuser
+*.aps
+*.pch
+*.res
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Build folders
+[Bb]in/
+[Oo]bj/
+Debug/
+Release/
+x64/
+x86/
+build/
+
+# Visual Studio Code settings
+.vscode/
+
+# Visual Studio cache files
+*.VC.db
+*.VC.VC.opendb
+
+# NuGet packages
+*.nupkg
+packages/
+# Uncomment if using package restore
+# .nuget/
+
+# Other temp files
+*.log
+*.vspscc
+*.vssscc
+
+# Ignore Rider files if using JetBrains Rider
+.idea/
+
+# Ignore CMake build folders (if using CMake)
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+
+# Ignore anything else temporary
+*.tmp
+*.bak
+*.swp
