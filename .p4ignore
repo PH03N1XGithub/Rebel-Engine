@@ -1,0 +1,96 @@
+# Ignore user-specific settings
+Saved/
+*.user
+*.userprefs
+*.suo
+*.opensdf
+*.log
+*.tmb
+*.swp
+
+
+# But keep everything inside "DotEngine - Copy 600FPS+/lib"
+!DotEngine - Copy 600FPS+/lib/**
+
+# Exceptions
+!x64/Debug/SDL3.dll
+!DotEngine/Debug/vc143.pdb
+!lib/arm64/SDL3.pdb
+!Win32/Debug/SDL3.dll
+
+
+# Ignore intermediate and build files
+Intermediate/
+DerivedDataCache/
+Binaries/
+
+
+Build/
+
+# Ignore Visual Studio temporary files
+.vscode/
+.vs/
+*.VC.db
+*.VC.opendb
+*.VC.VC.opendb
+*.VC.db-shm
+*.VC.db-wal
+*.ncb
+*.sdf
+*.sln
+
+# Ignore build artifacts
+Build/Win64/
+Build/Win32/
+Build/Linux/
+Build/Mac/
+Build/Android/
+Build/IOS/
+
+# Ignore auto-generated folders and files
+*.gen
+*.generated.*
+*.tmp
+*.obj
+*.pch
+*.pdb
+*.dll
+*.exe
+*.app
+*.so
+*.dylib
+*.ipa
+*.apk
+
+# Ignore source control temp files
+Thumbs.db
+desktop.ini
+*.tmp
+
+# Ignore Mac-specific files
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Ignore Unreal Engine editor crash logs
+Saved/Logs/
+
+# Optional: Ignore third-party plugins if you don’t want them versioned
+Plugins/ThirdParty/
+
+# Ignore Python compiled files
+*.pyc
+__pycache__/
+
+# Ignore backup files
+*.bak
+*.old
+
+
+# Ignore the vendor directory except for premake5.exe
+src/vendor/*
+!src/vendor/bin/premake/premake5.exe
+
+# Ensure premake5.exe is not ignored
+!src/premake5.exe
+
