@@ -171,17 +171,17 @@ END_REFLECT_CLASS(MyClass)
 using namespace Rebel::Core::Reflection;
 
 // Setup object
-ReflectionPlayer reflectionPlayer{ "Geraltdsad3169", 93, 75.653f };
+ReflectionPlayer reflectionPlayer{ "Player1", 93, 75.653f };
 
 // Serialize using reflection
 Rebel::Core::Serialization::YamlSerializer serializer;
 serializer.Serialize(serializer, reflectionPlayer);
-serializer.SaveToFile("player.yamlsk");
+serializer.SaveToFile("player.rasset");
 
 // Deserialize using reflection
 ReflectionPlayer loadedPlayer;
 Rebel::Core::Serialization::YamlSerializer loader;
-loader.LoadFromFile("player.yamlsk");
+loader.LoadFromFile("player.rasset");
 loader.Deserialize(serializer, loadedPlayer);
 ```
 
