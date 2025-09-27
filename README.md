@@ -75,11 +75,9 @@ if (pScore) std::cout << *pScore;
 The math module wraps `glm` for vector, matrix, and quaternion math.
 
 ```cpp
-using Vector3 = Rebel::Core::Math::vec3;
-using Quaternion = Rebel::Core::Math::quat;
+using Vector3 = FMath::vec3;
 
-Vector3 Position(1.0f, 2.0f, 3.0f);
-Quaternion Rot = glm::angleAxis(glm::radians(90.0f), Vector3(0,1,0));
+Vector3 v(1, 2, 3);
 ```
 
 **Aliases:**
@@ -133,6 +131,7 @@ MultiDelegate.Broadcast("Hello World");
 ```cpp
 BucketScheduler scheduler(4, 2);
 scheduler.AddTask(0, []{ std::cout << "Task 0"; });
+scheduler.AddTask(0, &Task1);
 scheduler.SetBucketCallback(0, []{ std::cout << "Bucket 0 complete"; });
 scheduler.WaitForAllTasks();
 ```
@@ -164,27 +163,36 @@ END_REFLECT_CLASS(MyClass)
 
 ## Serialization
 
-`YamlSerializer` implements `ISerializer` for YAML-based save/load.
+`YamlSerializer` works with **reflection-driven serialization**, allowing you to iterate and access object properties dynamically using `TypeInfo` and `PropertyInfo`.
+
+### Example: Reflection-based Property Access
 
 ```cpp
-YamlSerializer serializer;
-serializer.BeginObject("Player");
-serializer.Write("Health", 100);
-serializer.Write("Name", String("Alice"));
-serializer.EndObject();
-serializer.SaveToFile("savegame.yaml");
+using namespace Rebel::Core::Reflection;
+
+// Setup object
+ReflectionPlayer reflectionPlayer{ "Geraltdsad3169", 93, 75.653f };
+
+// Serialize using reflection
+Rebel::Core::Serialization::YamlSerializer serializer;
+serializer.Serialize(serializer, reflectionPlayer);
+serializer.SaveToFile("player.yamlsk");
+
+// Deserialize using reflection
+ReflectionPlayer loadedPlayer;
+Rebel::Core::Serialization::YamlSerializer loader;
+loader.LoadFromFile("player.yamlsk");
+loader.Deserialize(serializer, loadedPlayer);
 ```
 
 **Features:**
 
-- Key-value write/read (int, float, bool, String)
-- Nested object support
-- Automatic reflection-based serialization/deserialization
+* Iterate properties of any reflected class dynamically
+* Access property values without hardcoding types
+* Support for inheritance checks (`IsA`)
+* Works seamlessly with YAML serialization
+* Supports nested objects and pointers
 
-```cpp
-YamlSerializer::Serialize(serializer, myObject);
-YamlSerializer::Deserialize(loader, myObject);
-```
 
 ## Profiling
 
