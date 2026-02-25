@@ -229,6 +229,7 @@ TArray/TMap, memory, reflection, logging, serializer, math, delegates.
 </td>
 </tr>
 </table>
+
 ### Runtime vs Editor Separation
 
 Runtime and editor responsibilities are split between `BaseEngine` and `EditorEngine`. This keeps edit-time behavior such as gizmos, editor camera controls, and tooling isolated from runtime simulation, and supports safe Play-In-Editor scene duplication via `TempPIE.Ryml`.
