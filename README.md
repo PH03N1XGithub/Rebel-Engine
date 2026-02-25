@@ -93,15 +93,15 @@ These screenshots highlight the editor workflow, debugging tools, and rendering 
 
 ### Viewport Overview
 
-![Viewport Overview](docs/images/viewport.png)
-
+<img width="1920" height="1032" alt="viewport" src="https://github.com/user-attachments/assets/8e0239fb-8ee9-49cc-9667-cbca96a73978" />
 Viewport rendering of a loaded scene with real-time camera navigation and editor integration.
 
 ---
 
 ### Transform Gizmo & Object Editing
 
-![Gizmo Editing](docs/images/gizmo.png)
+<img width="957" height="621" alt="gizmo" src="https://github.com/user-attachments/assets/2593b2da-0bbc-4e7c-ba60-ac9de60fa5ce" />
+
 
 Transform gizmos and ID-buffer picking support precise actor edits directly in the viewport.
 
@@ -109,7 +109,7 @@ Transform gizmos and ID-buffer picking support precise actor edits directly in t
 
 ### Skeleton Debug Rendering
 
-![Skeleton Debug](docs/images/skeleton_debug.png)
+<img width="497" height="566" alt="skeleton_debug" src="https://github.com/user-attachments/assets/d824fb43-c38f-4028-8b8e-ed9f70987493" />
 
 Skeleton debug overlay validates hierarchy import, bone transforms, and animation-pipeline readiness.
 
@@ -117,7 +117,7 @@ Skeleton debug overlay validates hierarchy import, bone transforms, and animatio
 
 ### Physics Collider Debug Visualization
 
-![Collider Debug](docs/images/collider_debug.png)
+<img width="1920" height="1032" alt="collider_debug" src="https://github.com/user-attachments/assets/389965fe-e094-43b2-974b-ede1cc6ff38e" />
 
 Collider debug rendering verifies generated physics shapes across editor and runtime inspection workflows.
 
@@ -125,40 +125,19 @@ Collider debug rendering verifies generated physics shapes across editor and run
 
 ### Animation Runtime (GIF)
 
-![Animation Runtime](docs/images/animation_playback.gif)
+![animation_playback](https://github.com/user-attachments/assets/8c2c74f6-7e4c-49c0-a8de-8ed317ae7b24)
 
 Animation playback demonstrating runtime pose evaluation and skeletal deformation.
 
-Suggested captures:
-
-- animation playback in viewport
-- skeleton debug overlay while animating
-- pose update across frames
-- root motion preview (if supported)
-
-Suggested additional visuals:
-
-- bone hierarchy debug
-- animation pose progression
-- runtime playback comparison
-
 ## Editor Interaction (GIF)
 
-![Editor Interaction](docs/images/editor_demo.gif)
+![editor_demo](https://github.com/user-attachments/assets/ea7b42e2-a5d3-46dd-af8c-0266b2360626)
 
 Animated editor interaction covering viewport selection, gizmo transforms, camera navigation, and debug overlays.
 
 ## Video Demo
 
 Coming soon.
-
-**Suggested content**
-
-- Editor layout overview
-- Scene loading & Play-In-Editor
-- Gizmo editing & selection
-- Debug visualization tools
-- Camera movement & interaction
 
 ## Key Features
 
