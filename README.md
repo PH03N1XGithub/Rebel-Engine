@@ -181,7 +181,17 @@ These tools keep debugging inside normal editor workflows and speed up iteration
 
 ## Architecture Overview
 
-```text
+<table>
+<tr>
+<td valign="top">
+
+<img width="286" alt="Architecture Overview"
+src="https://github.com/user-attachments/assets/3fa90412-e61e-469a-a107-51e033c30395" />
+
+</td>
+<td valign="top">
+
+<pre>
 +---------------------+        +----------------------+
 |      Editor App     |        |       Game App       |
 |  (Editor/main.cpp)  |        |   (Game/main.cpp)    |
@@ -214,8 +224,11 @@ These tools keep debugging inside normal editor workflows and speed up iteration
 
 Core library underpins all layers:
 TArray/TMap, memory, reflection, logging, serializer, math, delegates.
-```
+</pre>
 
+</td>
+</tr>
+</table>
 ### Runtime vs Editor Separation
 
 Runtime and editor responsibilities are split between `BaseEngine` and `EditorEngine`. This keeps edit-time behavior such as gizmos, editor camera controls, and tooling isolated from runtime simulation, and supports safe Play-In-Editor scene duplication via `TempPIE.Ryml`.
