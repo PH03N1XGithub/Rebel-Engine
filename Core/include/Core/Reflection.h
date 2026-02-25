@@ -28,17 +28,49 @@ namespace Rebel::Core::Reflection
         return (static_cast<uint32>(value) & static_cast<uint32>(flag)) != 0;
     }
 
+    inline uint64 TypeHash(const char* name)
+    {
+        uint64 hash = 1469598103934665603ull; // FNV-1a 64 bit
+        while (*name)
+        {
+            hash ^= (uint64)(unsigned char)(*name++);
+            hash *= 1099511628211ull;
+        }
+        return hash;
+    }
+
     // =============================================================
     // Property type info
     // =============================================================
     enum class EPropertyType : uint8
     {
-        Int,
+        Unknown = 0,
+
+        // ---- Integers ----
+        Int8,
+        UInt8,
+        Int16,
+        UInt16,
+        Int32,
+        UInt32,
+        Int64,
+        UInt64,
+
+        // ---- Floating point ----
         Float,
+        Double,
+
+        // ---- Other ----
         Bool,
         String,
-        Unknown
+        Enum,
+
+        // ---- Engine types ----
+        Vector3,
+        Asset,
+        MaterialHandle,
     };
+
 
     struct TypeInfo; // Forward declaration for object references
 
@@ -48,17 +80,58 @@ namespace Rebel::Core::Reflection
     template<typename T>
     struct PropertyTypeDeduce
     {
-        static constexpr EPropertyType value = EPropertyType::Unknown;
+        using CleanType = std::remove_cv_t<std::remove_reference_t<T>>;
+
+        static constexpr EPropertyType value =
+            std::is_enum_v<CleanType> ? EPropertyType::Enum :
+            EPropertyType::Unknown;
     };
 
-    template<> struct PropertyTypeDeduce<int>    { static constexpr EPropertyType value = EPropertyType::Int; };
-    template<> struct PropertyTypeDeduce<float>  { static constexpr EPropertyType value = EPropertyType::Float; };
-    template<> struct PropertyTypeDeduce<bool>   { static constexpr EPropertyType value = EPropertyType::Bool; };
-    template<> struct PropertyTypeDeduce<String> { static constexpr EPropertyType value = EPropertyType::String; };
+    // ---- Boolean ----
+    template<> struct PropertyTypeDeduce<Bool>
+    {
+        static constexpr EPropertyType value = EPropertyType::Bool;
+    };
 
-    // Treat all pointer types as Int (your engine uses pointers as 32-bit)
+    // ---- Signed integers ----
+    template<> struct PropertyTypeDeduce<int8>   { static constexpr EPropertyType value = EPropertyType::Int8; };
+    template<> struct PropertyTypeDeduce<int16>  { static constexpr EPropertyType value = EPropertyType::Int16; };
+    template<> struct PropertyTypeDeduce<int32>  { static constexpr EPropertyType value = EPropertyType::Int32; };
+    template<> struct PropertyTypeDeduce<int64>  { static constexpr EPropertyType value = EPropertyType::Int64; };
+
+    // ---- Unsigned integers ----
+    template<> struct PropertyTypeDeduce<uint8>  { static constexpr EPropertyType value = EPropertyType::UInt8; };
+    template<> struct PropertyTypeDeduce<uint16> { static constexpr EPropertyType value = EPropertyType::UInt16; };
+    template<> struct PropertyTypeDeduce<uint32> { static constexpr EPropertyType value = EPropertyType::UInt32; };
+    template<> struct PropertyTypeDeduce<uint64> { static constexpr EPropertyType value = EPropertyType::UInt64; };
+
+    // ---- Floating point ----
+    template<> struct PropertyTypeDeduce<Float>  { static constexpr EPropertyType value = EPropertyType::Float; };
+    template<> struct PropertyTypeDeduce<Double> { static constexpr EPropertyType value = EPropertyType::Double; };
+
+    // ---- String ----
+    template<> struct PropertyTypeDeduce<String>
+    {
+        static constexpr EPropertyType value = EPropertyType::String;
+    };
+
+    struct EnumInfo
+    {
+        const char* EnumName;
+        const char** MemberNames;
+        uint32 Count;
+    };
     template<typename T>
-    struct PropertyTypeDeduce<T*> { static constexpr EPropertyType value = EPropertyType::Int; };
+    inline const EnumInfo& GetEnumInfo()
+    {
+        static const char* kEmpty[] = { "<unregistered>" };
+        static const EnumInfo info  = { "<unregistered>", kEmpty, 1 };
+        return info;
+    }
+
+
+
+
 
     // =============================================================
     // Property info
@@ -70,9 +143,10 @@ namespace Rebel::Core::Reflection
         MemSize Size;
         EPropertyFlags Flags = EPropertyFlags::None;
         EPropertyType Type = EPropertyType::Unknown;
-        const TypeInfo* ClassType = nullptr; // Optional for object references
+        const TypeInfo* ClassType = nullptr;
+        const EnumInfo* Enum = nullptr;
 
-        // Generic getter: returns pointer to property data
+
         template<typename T>
         T* Get(void* obj) const
         {
@@ -80,6 +154,7 @@ namespace Rebel::Core::Reflection
         }
     };
 
+    using FactoryFn = void* (*)();
     // =============================================================
     // Type info for classes/structs
     // =============================================================
@@ -87,10 +162,12 @@ namespace Rebel::Core::Reflection
     {
         String Name;
         MemSize Size;
-        const TypeInfo* Super = nullptr;  // Base class info
+        const TypeInfo* Super = nullptr;
         Memory::TArray<PropertyInfo> Properties;
 
-        // Check if this type is derived from another type
+        // Optional factory function to construct the type
+        FactoryFn CreateInstance = nullptr;
+
         bool IsA(const TypeInfo* base) const
         {
             const TypeInfo* t = this;
@@ -117,24 +194,37 @@ namespace Rebel::Core::Reflection
 
         void RegisterType(const TypeInfo& info)
         {
-            types[info.Name] = info;
+            // Avoid duplicates
+            if (types.Find(info.Name))
+                return;
+
+            // Stable allocation
+            TypeInfo* stored = new TypeInfo(info);
+            types.Add(stored->Name, stored);   // key is String, value is TypeInfo*
+            m_ByHash.Add(TypeHash(stored->Name.c_str()), stored);
         }
 
         const TypeInfo* GetType(const String& name)
         {
-            TypeInfo* it = types.Find(name);
-            if (it != nullptr) 
-                return it;
-            return nullptr;
+            TypeInfo** it = types.Find(name);
+            return it ? *it : nullptr;
+        }
+        const TypeInfo* GetTypeByHash(uint64 hash)
+        {
+            return *m_ByHash.Find(hash);
+        }
+
+        const Memory::TMap<String, TypeInfo*>& GetTypes() const
+        {
+            return types;
         }
 
     private:
-        Memory::TMap<String, TypeInfo> types;
+        Memory::TMap<String, TypeInfo*> types;   // <--- map<String, TypeInfo*>
+        Memory::TMap<uint64, const TypeInfo*> m_ByHash;
+
     };
 
-    // =============================================================
-    // Helper to get property pointer
-    // =============================================================
     inline void* GetPropertyPointer(void* obj, const PropertyInfo& prop)
     {
         return reinterpret_cast<uint8*>(obj) + prop.Offset;
@@ -142,7 +232,7 @@ namespace Rebel::Core::Reflection
 }
 
 // =============================================================
-// Reflection macros
+// Reflection macros (DLL-safe)
 // =============================================================
 #define REFLECTABLE_CLASS(TYPE, SUPER) \
 public: \
@@ -153,26 +243,59 @@ public: \
         return TYPE::StaticType(); \
     }
 
+// For abstract/base classes (no factory)
+#define REFLECT_ABSTRACT_CLASS(TYPE, SUPER) \
+namespace { \
+struct TYPE##_ReflectionHelper { \
+TYPE##_ReflectionHelper() { \
+Rebel::Core::Reflection::TypeInfo info; \
+info.Name = #TYPE; \
+info.Size = sizeof(TYPE); \
+if constexpr (!std::is_same_v<SUPER, void>) { \
+info.Super = Rebel::Core::Reflection::TypeRegistry::Get().GetType(#SUPER); \
+} \
+/* no factory */ \
+info.CreateInstance = nullptr; \
+Rebel::Core::Reflection::TypeRegistry::Get().RegisterType(info); \
+} \
+}; \
+static TYPE##_ReflectionHelper s_##TYPE##_reflectionHelper; \
+}
+
 #define REFLECT_CLASS(TYPE, SUPER) \
 namespace { \
 struct TYPE##_ReflectionHelper { \
-    TYPE##_ReflectionHelper() { \
-        Rebel::Core::Reflection::TypeInfo info; \
-        info.Name = #TYPE; \
-        info.Size = sizeof(TYPE); \
-        if constexpr (!std::is_same_v<SUPER, void>) { \
-            info.Super = Rebel::Core::Reflection::TypeRegistry::Get().GetType(#SUPER); \
-        }
+TYPE##_ReflectionHelper() { \
+Rebel::Core::Reflection::TypeInfo info; \
+info.Name = #TYPE; \
+info.Size = sizeof(TYPE); \
+if constexpr (!std::is_same_v<SUPER, void>) { \
+info.Super = Rebel::Core::Reflection::TypeRegistry::Get().GetType(#SUPER); \
+} \
+/* Add factory function for concrete classes */ \
+info.CreateInstance = []() -> void* { return new TYPE(); };
 
-#define REFLECT_PROPERTY(TYPE, FIELD, FLAGS) \
-info.Properties.Add({ \
-    #FIELD, \
-    offsetof(TYPE, FIELD), \
-    sizeof(((TYPE*)0)->FIELD), \
-    FLAGS, \
-    Rebel::Core::Reflection::PropertyTypeDeduce<decltype(((TYPE*)0)->FIELD)>::value, \
-    nullptr \
-})
+
+#define REFLECT_PROPERTY(TYPE, FIELD, FLAGS)                                      \
+do {                                                                              \
+using FieldT = std::remove_cv_t<std::remove_reference_t<decltype(((TYPE*)0)->FIELD)>>; \
+Rebel::Core::Reflection::PropertyInfo p;                                      \
+p.Name   = #FIELD;                                                            \
+p.Offset = offsetof(TYPE, FIELD);                                             \
+p.Size   = sizeof(((TYPE*)0)->FIELD);                                         \
+p.Flags  = FLAGS;                                                             \
+p.Type   = Rebel::Core::Reflection::PropertyTypeDeduce<FieldT>::value;        \
+p.ClassType = nullptr;                                                        \
+p.Enum      = nullptr;                                                        \
+\
+if constexpr (std::is_enum_v<FieldT>)                                         \
+{                                                                             \
+p.Enum = &Rebel::Core::Reflection::GetEnumInfo<FieldT>();                 \
+}                                                                             \
+\
+info.Properties.Add(p);                                                       \
+} while (0)
+
 
 #define END_REFLECT_CLASS(TYPE) \
         Rebel::Core::Reflection::TypeRegistry::Get().RegisterType(info); \
@@ -180,3 +303,38 @@ info.Properties.Add({ \
 }; \
 static TYPE##_ReflectionHelper s_##TYPE##_reflectionHelper; \
 }
+
+
+#define _ENUM_RTTI_INTERNAL_BEGIN(EnumType)                     \
+namespace Rebel::Core::Reflection {                          \
+inline constexpr const char* EnumType##_EnumName = #EnumType; \
+inline const char* EnumType##_MemberNames[] = {
+
+#define _ENUM_RTTI_INTERNAL_END(EnumType)                        \
+};                                                       \
+template<>                                               \
+inline const EnumInfo& GetEnumInfo<EnumType>()           \
+{                                                        \
+static const EnumInfo info = {                       \
+EnumType##_EnumName,                             \
+EnumType##_MemberNames,                          \
+(uint32)(sizeof(EnumType##_MemberNames) / sizeof(const char*)) \
+};                                                    \
+return info;                                         \
+}                                                        \
+}
+#define REFLECT_ENUM(EnumType) \
+_ENUM_RTTI_INTERNAL_BEGIN(EnumType)
+
+#define ENUM_OPTION(Name) \
+#Name,
+
+#define END_ENUM(EnumType) \
+_ENUM_RTTI_INTERNAL_END(EnumType)
+
+
+
+
+
+
+

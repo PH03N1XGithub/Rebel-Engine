@@ -33,7 +33,7 @@ namespace Rebel
 	}
 }
 
-/*typedef Rebel::Core::Bool			Bool;
+typedef Rebel::Core::Bool			Bool;
 typedef Rebel::Core::int8			int8;
 typedef Rebel::Core::uint8			uint8;
 typedef Rebel::Core::int16			int16;
@@ -44,7 +44,7 @@ typedef Rebel::Core::int64			int64;
 typedef Rebel::Core::uint64			uint64;
 typedef Rebel::Core::Float			Float;
 typedef Rebel::Core::Double			Double;
-typedef Rebel::Core::MemSize		MemSize;*/
+typedef Rebel::Core::MemSize		MemSize;
 
 
 

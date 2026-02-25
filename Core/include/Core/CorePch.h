@@ -46,6 +46,6 @@
 // -----------------------------
 // Engine Core (only in engine builds)
 // -----------------------------
-#ifdef REBELENGINE_DLL
+#ifndef  CORE
 #include "Core/Core.h"  // Includes CoreTypes, CoreMath, and Log
 #endif

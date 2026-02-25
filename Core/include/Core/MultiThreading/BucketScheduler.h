@@ -1,15 +1,4 @@
 #pragma once
-#include "ITask.h"
-
-#include <atomic>
-#include <condition_variable>
-#include <functional>
-#include <memory>
-#include <mutex>
-#include <queue>
-#include <thread>
-#include <vector>
-
 #include "Core/Delegate.h"
 
 namespace Rebel::Core::Threds
@@ -20,7 +9,7 @@ DECLARE_DELEGATE(FBucketCompleteDelegate);
 	
 
 // ---------- Bucket ----------
-struct Bucket
+struct ALIGNAS(64) Bucket
 {
 	Memory::TArray<std::function<void()>> tasks;                 // optional bookkeeping
 	std::atomic<MemSize> remainingTasks{0};
@@ -83,7 +72,7 @@ public:
 	
 
 private:
-	std::atomic<MemSize> activeTasks{0};
+	ALIGNAS(64) std::atomic<MemSize> activeTasks{0};
     std::mutex syncMutex;
     std::condition_variable syncCv;
 

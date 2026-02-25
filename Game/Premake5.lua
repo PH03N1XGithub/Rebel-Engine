@@ -12,3 +12,5 @@ project "Game"
     includedirs { IncludeDir.Game, IncludeDir.RebelEngine, IncludeDir.Core, IncludeDir.vendor }
     links { "RebelEngine", "Core" }
     dependson { "RebelEngine", "Core" }
+
+     debugdir (rootDir .. "/Game")

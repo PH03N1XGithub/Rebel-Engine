@@ -10,7 +10,10 @@ project "Core"
     targetdir (binDir)
     objdir    (objDir)
 
+     debugdir (rootDir .. "/Core")
+
     defines { "YAML_CPP_STATIC_DEFINE" }
+    defines { "CORE" }
 
     pchheader "Core/CorePch.h"
     pchsource "src/CorePch.cpp"

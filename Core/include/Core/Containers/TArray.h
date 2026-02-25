@@ -136,11 +136,12 @@ namespace Rebel::Core::Memory {
         T& Front() { assert(count > 0); return data[0]; }       // First element
         T& Back() const { assert(count > 0); return data[count-1]; } // Last element
 
-        // Modifiers
+        // Modifiers push_back
         void Add(const T& value) {
             EnsureCapacity(count + 1);           // Make sure we have room
             new(&data[count++]) T(value);        // Copy construct at the end
         }
+        // Modifiers push_back
         void Add(T&& value) {
             EnsureCapacity(count + 1);
             new(&data[count++]) T(std::move(value)); // Move construct at the end
@@ -187,6 +188,29 @@ namespace Rebel::Core::Memory {
                 new(&data[i]) T(std::move(data[i+1]));
                 data[i+1].~T();
             }
+            --count;
+        }
+
+        void EraseAtSwap(MemSize idx)
+        {
+            assert(idx < count && "TArray EraseAtSwap out of range");
+            MemSize last = count - 1;
+
+            if (idx != last)
+            {
+                // Destroy the element at idx
+                data[idx].~T();
+                // Move last element into idx
+                new (&data[idx]) T(std::move(data[last]));
+                // Destroy moved-from last
+                data[last].~T();
+            }
+            else
+            {
+                // Just pop last
+                data[last].~T();
+            }
+
             --count;
         }
 
@@ -241,6 +265,13 @@ namespace Rebel::Core::Memory {
             }
             count = 0;
         }
+
+        void Fill(const T& value)
+        {
+            for (MemSize i = 0; i < count; i++)
+                data[i] = value;
+        }
+
 
         // Pre-allocate memory
         void Reserve(MemSize newCap) {
@@ -332,3 +363,7 @@ namespace Rebel::Core::Memory {
     DefaultAllocator TArray<T, InlineCapacity>::defaultAllocator;*/
 
 } // namespace Rebel::Core::Memory
+
+// Alias for TArray
+template<typename T, Rebel::Core::MemSize InlineCapacity = 0, typename Allocator = Rebel::Core::Memory::DefaultAllocator>
+using TArray = Rebel::Core::Memory::TArray<T, InlineCapacity, Allocator>;

@@ -31,10 +31,22 @@ namespace Rebel::Core::Memory {
         void* Allocate(MemSize size, MemSize alignment = alignof(std::max_align_t)) override {
             //std::cout << "DefaultAllocator::Allocate" << size << std::endl;
             return std::malloc(size);
+/*#if defined(_MSC_VER)
+            return _aligned_malloc(size, alignment);
+#else
+            void* p = nullptr;
+            if (posix_memalign(&p, alignment, size) != 0) return nullptr;
+            return p;
+#endif*/
         }
         void Free(void* ptr, MemSize size) override {
             //std::cout << "DefaultAllocator::Free" << size<< std::endl;
             std::free(ptr);
+/*#if defined(_MSC_VER)
+            _aligned_free(ptr);
+#else
+            std::free(ptr);
+#endif*/
         }
     };
 
@@ -203,6 +215,17 @@ namespace Rebel::Core::Memory {
         UniquePtr(const UniquePtr&) = delete;
         UniquePtr& operator=(const UniquePtr&) = delete;
         ~UniquePtr(){ delete ptr; }
+
+        // Templated move constructor for upcasting
+        template<typename U, typename = std::enable_if_t<std::is_convertible_v<U*, T*>>>
+        UniquePtr(UniquePtr<U>&& other) noexcept : ptr(other.Release()) {}
+
+        // Templated move assignment operator for upcasting
+        template<typename U, typename = std::enable_if_t<std::is_convertible_v<U*, T*>>>
+        UniquePtr& operator=(UniquePtr<U>&& other) noexcept {
+            Reset(other.Release());
+            return *this;
+        }
     
         T* Get() const { return ptr; }
         T* operator->() const { return ptr; }
@@ -301,3 +324,24 @@ namespace Rebel::Core::Memory {
     }
     
 } // namespace Rebel::Core::Memory
+
+// Aliases outside the Rebel namespace
+template<typename T>
+using RSharedPtr = Rebel::Core::Memory::SharedPtr<T>;
+
+template<typename T>
+using RWeakPtr = Rebel::Core::Memory::WeakPtr<T>;
+
+template<typename T>
+using RUniquePtr = Rebel::Core::Memory::UniquePtr<T>;
+
+// Optional: aliases for MakeShared and MakeUnique
+template<typename T, typename... Args>
+RSharedPtr<T> RMakeShared(Args&&... args) {
+    return Rebel::Core::Memory::MakeShared<T>(std::forward<Args>(args)...);
+}
+
+template<typename T, typename... Args>
+RUniquePtr<T> RMakeUnique(Args&&... args) {
+    return Rebel::Core::Memory::MakeUnique<T>(std::forward<Args>(args)...);
+}

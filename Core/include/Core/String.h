@@ -376,3 +376,5 @@ namespace YAML {
     };
 }
 
+typedef Rebel::Core::String			String;
+

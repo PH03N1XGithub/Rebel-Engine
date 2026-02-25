@@ -1,11 +1,13 @@
-#include <iostream>
+#include "EnginePch.h"
+#include "EditorEngine.h"
 
-// forward declaration
-void EngineTest();
+
 
 int main()
 {
 	std::cout << "Editor running..." << std::endl;
-	EngineTest();  // call function from RebelEngine DLL
+	GEngine = new EditorEngine();
+	GEngine->Run();
+	delete GEngine;
 	return 0;
 }

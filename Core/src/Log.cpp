@@ -6,8 +6,12 @@ namespace Rebel::Core
 
 	LogCategory::LogCategory(const String& name)       
 	{
-		//auto rawLogger = spdlog::stdout_color_mt(name).get(); // raw spdlog::logger*
-		m_Logger = std::make_shared<spdlog::logger>(*spdlog::stdout_color_mt(name.c_str()));
+		auto consoleSink = std::make_shared<spdlog::sinks::stdout_color_sink_mt>();
+		auto engineSink  = std::make_shared<EngineSink_mt>();
+
+		std::vector<spdlog::sink_ptr> sinks { consoleSink, engineSink };
+		
+		m_Logger = std::make_shared<spdlog::logger>(name.c_str(), sinks.begin(), sinks.end());
 		/**
 		 * @param %^ color start
 		 * @param %T - timestamp

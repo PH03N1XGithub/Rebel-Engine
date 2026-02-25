@@ -33,7 +33,7 @@ ScopedTimer::ScopedTimer(const String& name): m_Name(name)
 ScopedTimer::~ScopedTimer()
 {
 	Float time = m_Timer.ElapsedMillis();
-	RB_LOG(s_ScopedTimer, trace, "{} - {}ms", m_Name, time, "")
+	RB_LOG(s_ScopedTimer, info, "{} - {}ms", m_Name, time, "")
 }
 
 

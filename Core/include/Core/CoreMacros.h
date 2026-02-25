@@ -55,9 +55,8 @@ namespace Rebel::Core
     inline void EnsureError(const char* msg, const char* file, int line)
     {
         const char* filename = GetFileName(file);
-        //std::fprintf(stderr, "Ensure Failed: %s\nFile: %s:%d\n", msg, filename, line);
-        //DEBUG_BREAK();
-        //RB_LOG(ExacutionFlow,Critical,"Ensure Failed {} {}",filename,line)
+        std::fprintf(stderr, "Ensure Failed: %s\nFile: %s:%d\n", msg, filename, line);
+        DEBUG_BREAK();
     }
 
     /**
@@ -118,11 +117,7 @@ namespace Rebel::Core
 // Core Assertions
 // =======================================================
 
-// Fatal if expr is false
-#define CHECK(expr) \
-    ((expr) ? (void)0 : Rebel::Core::FatalError(#expr, __FILE__, __LINE__))
-
-// Logs error but continues execution
+// Logs error and triggers debug break, then continues execution
 #define ENSURE(expr) \
 ([&]() -> bool { \
 static bool bTriggered = false; \
@@ -137,15 +132,38 @@ return false; \
 return true; \
 }())
 
-
-
-// Same as CHECK but allows custom message
-#define CHECK_MSG(expr, msg) \
-    ((expr) ? (void)0 : Rebel::Core::FatalError(msg, __FILE__, __LINE__))
-
-// Same as ENSURE but allows custom message
+// Logs error with custom message and triggers debug break, then continues execution
 #define ENSURE_MSG(expr, msg) \
-    ((expr) ? true : (Rebel::Core::EnsureError(msg, __FILE__, __LINE__), false))
+([&]() -> bool { \
+static bool bTriggered = false; \
+if (!(expr)) { \
+if (!bTriggered) { \
+bTriggered = true; \
+DEBUG_BREAK(); \
+} \
+Rebel::Core::EnsureError(msg, __FILE__, __LINE__); \
+return false; \
+} \
+return true; \
+}())
+
+// Fatal if expr is false, triggers debug break first
+#define CHECK(expr) \
+do { \
+if (!(expr)) { \
+DEBUG_BREAK(); \
+Rebel::Core::FatalError(#expr, __FILE__, __LINE__); \
+} \
+} while(0)
+
+// Fatal if expr is false with custom message, triggers debug break first
+#define CHECK_MSG(expr, msg) \
+do { \
+if (!(expr)) { \
+DEBUG_BREAK(); \
+Rebel::Core::FatalError(msg, __FILE__, __LINE__); \
+} \
+} while(0)
 
 // Debug-only checks
 #ifndef NDEBUG

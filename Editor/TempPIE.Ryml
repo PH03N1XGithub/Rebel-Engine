@@ -1,0 +1,147 @@
+Scene:
+  Actors:
+    - Actor: ~
+      Components:
+        IDComponent:
+          ID: 6003244671379490235
+        NameComponent:
+          Name: Actor
+        ActorTagComponent:
+          Tag: ""
+        SceneComponent:
+          ComponentTag: ""
+          Position: [-1.78000009, 1.39033747, 0.899999976]
+          Rotation: [0, -0, 179.999969]
+          Scale: [0.999996066, 0.999996066, 1]
+        CapsuleComponent:
+          ComponentTag: ""
+          Position: [0, 0, 0]
+          Rotation: [0, 0, 0]
+          Scale: [1, 1, 1]
+          BodyType: Kinematic
+          Radius: 0
+          HalfHeight: 0
+        SkeletalMeshComponent:
+          ComponentTag: ""
+          Position: [0, 0, -0.899999976]
+          Rotation: [0, 0, 0]
+          Scale: [1, 1, 1]
+          Mesh: 16043172291378730899
+          Animation: 8960914265294226428
+          MaterialHandle: 0
+          bIsVisible: true
+          bCastShadows: true
+          bDrawSkeleton: false
+          bPlayAnimation: true
+          bLoopAnimation: true
+          PlaybackSpeed: 1
+          PlaybackTime: 0.11324358
+    - Actor: ~
+      Components:
+        IDComponent:
+          ID: 8157611816657067122
+        NameComponent:
+          Name: Actor
+        ActorTagComponent:
+          Tag: ""
+        SceneComponent:
+          ComponentTag: ""
+          Position: [0, 0, -0.317017436]
+          Rotation: [0, -0, 0]
+          Scale: [10, 10, 0.200000003]
+        BoxComponent:
+          ComponentTag: ""
+          Position: [0, 0, 0]
+          Rotation: [0, 0, 0]
+          Scale: [1, 1, 1]
+          BodyType: Static
+          HalfExtent: [1, 1, 1]
+        StaticMeshComponent:
+          ComponentTag: ""
+          Position: [0, 0, 0]
+          Rotation: [0, 0, 0]
+          Scale: [1, 1, 1]
+          Mesh: 16419860737094521997
+          MaterialHandle: 0
+          bIsVisible: true
+          bCastShadows: true
+    - Actor: ~
+      Components:
+        IDComponent:
+          ID: 13229731360401866573
+        NameComponent:
+          Name: Actor
+        ActorTagComponent:
+          Tag: ""
+        SceneComponent:
+          ComponentTag: ""
+          Position: [2.6680727, 1.01649523, 3.87915659]
+          Rotation: [0, -0, 0]
+          Scale: [1, 1, 1]
+        BoxComponent:
+          ComponentTag: ""
+          Position: [0, 0, 0]
+          Rotation: [0, 0, 0]
+          Scale: [1, 1, 1]
+          BodyType: Dynamic
+          HalfExtent: [0.5, 0.5, 0.5]
+        StaticMeshComponent:
+          ComponentTag: ""
+          Position: [0, 0, 0]
+          Rotation: [0, 0, 0]
+          Scale: [0.5, 0.5, 0.5]
+          Mesh: 16419860737094521997
+          MaterialHandle: 0
+          bIsVisible: true
+          bCastShadows: true
+    - Actor: ~
+      Components:
+        IDComponent:
+          ID: 4141304984032418353
+        NameComponent:
+          Name: Actor
+        ActorTagComponent:
+          Tag: ""
+        SceneComponent:
+          ComponentTag: ""
+          Position: [0, -10.1999998, 4.74314022]
+          Rotation: [0, -0, 0]
+          Scale: [10, 0.200000003, 5]
+        StaticMeshComponent:
+          ComponentTag: ""
+          Position: [0, 0, 0]
+          Rotation: [0, 0, 0]
+          Scale: [1, 1, 1]
+          Mesh: 16419860737094521997
+          MaterialHandle: 0
+          bIsVisible: true
+          bCastShadows: true
+    - Actor: ~
+      Components:
+        IDComponent:
+          ID: 16716281718425354738
+        NameComponent:
+          Name: Actor
+        ActorTagComponent:
+          Tag: ""
+        SceneComponent:
+          ComponentTag: ""
+          Position: [1.337345, 0, 1.60317862]
+          Rotation: [-11.3530407, 9.30576801, 38.846653]
+          Scale: [0.999997675, 0.999997795, 0.999998748]
+        BoxComponent:
+          ComponentTag: ""
+          Position: [0, 0, 0]
+          Rotation: [0, 0, 0]
+          Scale: [1, 1, 1]
+          BodyType: Dynamic
+          HalfExtent: [1, 1, 1]
+        StaticMeshComponent:
+          ComponentTag: ""
+          Position: [0, 0, 0]
+          Rotation: [0, 0, 0]
+          Scale: [1, 1, 1]
+          Mesh: 16419860737094521997
+          MaterialHandle: 0
+          bIsVisible: true
+          bCastShadows: true

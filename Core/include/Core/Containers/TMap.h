@@ -59,12 +59,25 @@ public:
         return &buckets[idx].Value;
     }
 
+    Bool Contains(const Key& key) const
+    {
+        size_t idx;
+        return FindIndex(key, idx);   // or: return Find(key) != nullptr;
+    }
+
     Bool Remove(const Key& key) {
         size_t idx;
         if (!FindIndex(key, idx)) return false;
         buckets[idx].TopHash = 1; // tombstone
         count--;
         return true;
+    }
+    void Clear()
+    {
+        buckets.Clear();
+        capacity = 16;
+        buckets.Resize(capacity);
+        count = 0;
     }
 
     MemSize Num() const { return count; }
@@ -83,13 +96,32 @@ public:
         size_t idx;
     };
 
+    class const_iterator {
+    public:
+        const_iterator(const TArray<PairType>* b, size_t i) : buckets(b), idx(i) { Advance(); }
+        const PairType& operator*() const { return (*buckets)[idx]; }
+        const PairType* operator->() const { return &(*buckets)[idx]; }
+        const_iterator& operator++() { ++idx; Advance(); return *this; }
+        bool operator!=(const const_iterator& other) const { return idx != other.idx; }
+
+    private:
+        void Advance() { while (idx < buckets->Num() && (*buckets)[idx].TopHash < 2) idx++; }
+        const TArray<PairType>* buckets;
+        size_t idx;
+    };
+
     iterator begin() { return iterator(&buckets, 0); }
     iterator end() { return iterator(&buckets, buckets.Num()); }
 
+    const_iterator begin() const { return const_iterator(&buckets, 0); }
+    const_iterator end() const { return const_iterator(&buckets, buckets.Num()); }
+    const_iterator cbegin() const { return const_iterator(&buckets, 0); }
+    const_iterator cend() const { return const_iterator(&buckets, buckets.Num()); }
+
 private:
     TArray<PairType> buckets;
-    size_t capacity = 0;
-    size_t count = 0;
+    MemSize capacity = 0;
+    MemSize count = 0;
 
     size_t HashKey(const Key& key) const { return std::hash<Key>{}(key); }
     uint8 TopHash(size_t hash) const { return static_cast<uint8>((hash >> (sizeof(size_t)*8 - 8)) | 0x80); }
@@ -128,6 +160,12 @@ private:
     }
 
     Bool FindIndex(const Key& key, size_t& outIdx) const {
+
+        ENSURE(this != nullptr);
+        ENSURE(capacity != 0);
+        ENSURE(buckets.Num() == capacity);          // veya >= capacity, tasarımına göre
+        ENSURE(buckets.Data() != nullptr); 
+
         size_t hash = HashKey(key);
         uint8 th = TopHash(hash);
         size_t idx = hash & (capacity - 1);
@@ -160,3 +198,6 @@ private:
 };
 
 } // namespace Rebel::Core::Memory
+// Alias for TMap
+template<typename Key, typename Value>
+using TMap = Rebel::Core::Memory::TMap<Key, Value>;

@@ -1,4 +1,5 @@
 #include "Core/CorePch.h"
+#include "Core/CorePch.h"
 #include "Core/Core.h"
 #include "Core/Delegate.h"
 #include "Core/MultiThreading/BucketScheduler.h"
@@ -158,7 +159,7 @@ namespace Rebel::Core
 
         
 
-        /*Threds::BucketScheduler scheduler(4, 10); // 2 buckets, 4 workers
+        Threds::BucketScheduler scheduler(4, 10); // 2 buckets, 4 workers
         for (int frame = 0; frame < 3; ++frame) {
             PROFILE_SCOPE("main loop")
             s_Time = static_cast<float>(frame);
@@ -186,10 +187,10 @@ namespace Rebel::Core
             //std::this_thread::sleep_for(std::chrono::milliseconds(1000));
             RB_LOG(TaskLog, trace, "End Main Loop")
 
-        }*/
+        }
 
 
-        /*using namespace Rebel::Core::Reflection;
+        using namespace Rebel::Core::Reflection;
 
         // 1️⃣ Get TypeInfo from registry
         const TypeInfo* actorType = TypeRegistry::Get().GetType("ReflectionPlayer");
@@ -208,9 +209,9 @@ namespace Rebel::Core
         ReflectionPlayer reflectionPlayer{ "Geraltdsad3169", 93, 75.653f };
 
         Rebel::Core::Serialization::YamlSerializer serializer;
-        serializer.Serialize(serializer,reflectionPlayer);  // <-- serialize using reflection
+        serializer.Serialize(reflectionPlayer);  // <-- serialize using reflection
 
-        if (serializer.SaveToFile("player.yamlsk"))
+        if (serializer.SaveToFile("player.Ryml"))
             std::cout << "Saved player.yaml\n";
         else
             std::cout << "Failed to save player.yaml\n"; 
@@ -230,7 +231,7 @@ namespace Rebel::Core
         else
         {
             std::cout << "Failed to load player.yaml\n";
-        }*/
+        }
 
 
         Player player;
@@ -250,7 +251,7 @@ namespace Rebel::Core
                 std::cout << "Property: " << prop.Name.c_str() << " | Type: " << static_cast<int>(prop.Type) << " | Size: " << prop.Size << "\n";
         
                 // Access dynamically
-                if (prop.Type == Reflection::EPropertyType::Int)
+                if (prop.Type == Reflection::EPropertyType::Int32)
                 {
                     int* val = prop.Get<int>(&player);
                     std::cout << "  Value (int): " << *val << "\n";
@@ -267,6 +268,9 @@ namespace Rebel::Core
             std::cout << "Weapon is Player? " << weaponType->IsA(playerType) << "\n"; // should be 0 (false)
         
         std::cin.get();
+
+        Vector3 v(1, 2, 3);
+        std::cout << v.x << " " << v.y << " " << v.z << "\n";
         
     
 

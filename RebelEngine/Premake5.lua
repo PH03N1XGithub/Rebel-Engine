@@ -1,5 +1,5 @@
 project "RebelEngine"
-    kind "SharedLib"
+    kind "StaticLib"
     language "C++"
     cppdialect "C++20"
     staticruntime "on"
@@ -7,23 +7,37 @@ project "RebelEngine"
     location (rootDir .. "/Build")
     targetdir (binDir)
     objdir    (objDir)
+    debugdir (rootDir .. "/RebelEngine")
 
-    defines { "REBELENGINE_DLL" }
+    defines {
+         "REBELENGINE_DLL" ,
+         "GLFW_INCLUDE_NONE",
+         "YAML_CPP_STATIC_DEFINE",
+         -- --------------------------
+        -- JOLT ABI DEFINES (MUST MATCH JoltPhysics EXACTLY)
+        -- --------------------------
+        "JPH_PLATFORM_WINDOWS",
+        "JPH_COMPILER_MSVC",
+        "JPH_ENABLE_ASSERTS=0",
+        "JPH_PROFILE_ENABLED=0",
+        "JPH_DEBUG_RENDERER=0",
+        "JPH_FLOATING_POINT_EXCEPTIONS_ENABLED=0",
+        "JPH_DOUBLE_PRECISION=0"
+    }
+
+    pchheader "EnginePch.h"
+    pchsource "src/EnginePch.cpp"
+
 
     files { "**.h", "**.cpp" }
-    includedirs { IncludeDir.RebelEngine, IncludeDir.Core, IncludeDir.vendor }
-    links { "Core" }
+    includedirs { IncludeDir.RebelEngine, IncludeDir.Core, IncludeDir.vendor, IncludeDir.yaml_cpp, IncludeDir.glfw, IncludeDir.GLAD, IncludeDir.assimp, IncludeDir.JoltPhysics}
+    links { "Core","GLAD","GLFW","opengl32","assimp","yaml-cpp","JoltPhysics" }
     dependson { "Core" }
 
-    postbuildcommands {
-        "if not exist \"%{wks.location}Bin\\%{cfg.buildcfg}\\Editor\" mkdir \"%{wks.location}Bin\\%{cfg.buildcfg}\\Editor\"",
-        "if not exist \"%{wks.location}Bin\\%{cfg.buildcfg}\\Game\" mkdir \"%{wks.location}Bin\\%{cfg.buildcfg}\\Game\"",
-        "copy /B /Y \"%{cfg.targetdir}\\RebelEngine.dll\" \"%{wks.location}Bin\\%{cfg.buildcfg}\\Editor\\RebelEngine.dll\"",
-        "copy /B /Y \"%{cfg.targetdir}\\RebelEngine.dll\" \"%{wks.location}Bin\\%{cfg.buildcfg}\\Game\\RebelEngine.dll\""
-    }
 
     filter "system:windows"
         systemversion "latest"
+        buildoptions { "/utf-8" }
 
     filter "configurations:Debug"
         runtime "Debug"
