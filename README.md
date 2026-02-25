@@ -37,7 +37,12 @@ Rebel Engine is a custom C++ engine built as a practical sandbox for responsive 
 - [Future Documentation](#future-documentation)
 
 ## Quick Start
+Prerequisite:
+Place premake5.exe in the following directory:
 
+RebelEngine\vendor\bin\premake\
+
+The build script expects Premake at this exact location.
 ```bat
 .\scripts\generate_build.bat
 ```
