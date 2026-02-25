@@ -21,6 +21,12 @@ IncludeDir["vendor"]      = rootDir .. "/vendor"
 IncludeDir["GLM"]         = rootDir .. "/vendor/glm"
 IncludeDir["spdlog"]      = rootDir .. "/vendor/spdlog"
 IncludeDir["yaml_cpp"]    = rootDir .. "/vendor/yaml-cpp/include"
+IncludeDir["glfw"]    = rootDir .. "/vendor/glfw/include"
+IncludeDir["imgui"]    = rootDir .. "/vendor/imgui" 
+IncludeDir["GLAD"]    = rootDir .. "/vendor/GLAD/include"
+IncludeDir["assimp"]    = rootDir .. "/vendor/assimp/include"
+IncludeDir["ImGuizmo"]    = rootDir .. "/vendor/ImGuizmo"
+IncludeDir["JoltPhysics"]    = rootDir .. "/vendor/JoltPhysics"
 
 --==============================
 -- Output directories
@@ -34,6 +40,12 @@ objDir    = rootDir .. "/Build/Bin-Int/" .. outputdir
 --==============================
 group "Dependencies"
     include "vendor/yaml-cpp"
+    include "vendor/glfw"
+    include "vendor/imgui"
+    include "vendor/GLAD"
+    include "vendor/assimp"
+    include "vendor/ImGuizmo"
+    include "vendor/JoltPhysics"
 group ""
 
 --==============================
