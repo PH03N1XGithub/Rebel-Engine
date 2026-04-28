@@ -2,6 +2,8 @@
 #include "Core/CoreTypes.h"
 #include "Core/String.h"
 #include "Core/Containers/TArray.h"
+#include <filesystem>
+#include <cstring>
 
 class BinaryStream
 {
@@ -11,6 +13,7 @@ public:
 	virtual void Read(void* data, size_t size) = 0;
 	virtual uint64 Tell() const = 0;
 	virtual  void Seek(uint64 pos) = 0;
+	virtual bool IsOpen() const = 0;
 
 };
 
@@ -21,6 +24,28 @@ class FileStream : public BinaryStream
 public:
 	FileStream(const char* path, const char* mode)
 	{
+		const bool bWantsWrite =
+			mode &&
+			(std::strchr(mode, 'w') != nullptr ||
+			 std::strchr(mode, 'a') != nullptr ||
+			 std::strchr(mode, '+') != nullptr);
+
+		if (bWantsWrite && path && path[0] != '\0')
+		{
+			std::error_code ec;
+			const std::filesystem::path filePath(path);
+			if (std::filesystem::exists(filePath, ec))
+			{
+				std::filesystem::permissions(
+					filePath,
+					std::filesystem::perms::owner_write |
+						std::filesystem::perms::group_write |
+						std::filesystem::perms::others_write,
+					std::filesystem::perm_options::add,
+					ec);
+			}
+		}
+
 		f = std::fopen(path, mode);
 		if (!f)
 		{
@@ -32,21 +57,34 @@ public:
 		if (f) std::fclose(f);
 	}
 
+	bool IsOpen() const override
+	{
+		return f != nullptr;
+	}
+
 	void Write(const void* data, size_t size) override
 	{
+		if (!f)
+			return;
 		std::fwrite(data, 1, size, f);
 	}
 	void Read(void* data, size_t size) override
 	{
+		if (!f)
+			return;
 		std::fread(data, 1, size, f);
 	}
 	uint64 Tell() const override
 	{
+		if (!f)
+			return 0;
 		return (uint64)_ftelli64(f);
 	}
 
 	void Seek(uint64 pos) override
 	{
+		if (!f)
+			return;
 		_fseeki64(f, (long long)pos, SEEK_SET);
 	}
 

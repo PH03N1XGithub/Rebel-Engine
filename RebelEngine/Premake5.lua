@@ -1,4 +1,4 @@
-project "RebelEngine"
+﻿project "RebelEngine"
     kind "StaticLib"
     language "C++"
     cppdialect "C++20"
@@ -25,8 +25,8 @@ project "RebelEngine"
         "JPH_DOUBLE_PRECISION=0"
     }
 
-    pchheader "EnginePch.h"
-    pchsource "src/EnginePch.cpp"
+    pchheader "Engine/Framework/EnginePch.h"
+    pchsource "src/Framework/EnginePch.cpp"
 
 
     files { "**.h", "**.cpp" }
@@ -46,3 +46,5 @@ project "RebelEngine"
     filter "configurations:Release"
         runtime "Release"
         optimize "on"
+
+

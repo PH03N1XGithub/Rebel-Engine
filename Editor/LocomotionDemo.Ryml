@@ -1,0 +1,357 @@
+Scene:
+  GameMode:
+    Type: GameMode
+    GameMode:
+      m_DefaultPawnPrefab: 10280172042122209278
+      m_DefaultPawnClass: LocomotionCharacter
+      m_PlayerControllerPrefab: 14093958444410108335
+      m_PlayerControllerClass: ""
+  Actors:
+    - Actor:
+        m_TickPriority: 0
+      Components:
+        ObjectComponents:
+          - Type: SceneComponent
+            Name: SceneComponent
+            Properties:
+              m_EditorName: SceneComponent
+              ComponentTag: ""
+              m_Position: [0, 0, -3.9877336]
+              Rotation: [0, -0, 0]
+              Scale: [229.303513, 10, 1]
+          - Type: BoxComponent
+            Name: BoxComponent
+            Properties:
+              m_EditorName: BoxComponent
+              ComponentTag: ""
+              m_Position: [0, 0, 0]
+              Rotation: [0, 0, 0]
+              Scale: [1, 1, 1]
+              BodyType: Static
+              HalfExtent: [1, 1, 1]
+          - Type: StaticMeshComponent
+            Name: StaticMeshComponent
+            Properties:
+              m_EditorName: StaticMeshComponent
+              ComponentTag: ""
+              m_Position: [0, 0, 0]
+              Rotation: [0, 0, 0]
+              Scale: [1, 1, 1]
+              Mesh: 16419860737094521997
+              Material: 0
+              bIsVisible: true
+              bCastShadows: true
+        IDComponent:
+          ID: 13078378909207541994
+        NameComponent:
+          Name: Actor
+        ActorTagComponent:
+          Tag: ""
+    - Actor:
+        m_TickPriority: 0
+      Components:
+        ObjectComponents:
+          - Type: SceneComponent
+            Name: SceneComponent
+            Properties:
+              m_EditorName: SceneComponent
+              ComponentTag: ""
+              m_Position: [-2.8641715, 1.87167883, 0.0406832099]
+              Rotation: [0, -0, 0]
+              Scale: [1, 1, 1]
+          - Type: SkeletalMeshComponent
+            Name: SkeletalMeshComponent
+            Properties:
+              m_EditorName: SkeletalMeshComponent
+              ComponentTag: ""
+              m_Position: [0, 0, 0]
+              Rotation: [0, 0, 0]
+              Scale: [1, 1, 1]
+              Mesh: 1712247608353947290
+              AnimGraph: 0
+              AnimInstanceClass: ""
+              Animation: 10957113239453702604
+              IdleAnimation: 0
+              MoveAnimation: 0
+              StartAnimation: 0
+              StopLocomotionAnimation: 0
+              PivotAnimation: 0
+              JumpAnimation: 0
+              DoubleJumpAnimation: 0
+              InAirAnimation: 0
+              FallingAnimation: 0
+              LandAnimation: 0
+              Material: 0
+              bIsVisible: true
+              bCastShadows: true
+              bDrawSkeleton: false
+              bPlayAnimation: true
+              bLoopAnimation: true
+              bEnableRootMotion: false
+              RootMotionRootLock: RefPose
+              VisualRootMotionStripMode: StripTranslation
+              PlaybackSpeed: 1
+              OverrideBlendOutDuration: 0.0799999982
+        IDComponent:
+          ID: 5213882736866411812
+        NameComponent:
+          Name: Actor
+        ActorTagComponent:
+          Tag: ""
+    - Actor:
+        m_TickPriority: 0
+      Components:
+        ObjectComponents:
+          - Type: SceneComponent
+            Name: SceneComponent
+            Properties:
+              m_EditorName: SceneComponent
+              ComponentTag: ""
+              m_Position: [-12.5438871, -12.9469671, 1.13566113]
+              Rotation: [0, -0, 0]
+              Scale: [15.6351585, 3.06709838, 3.03412843]
+          - Type: BoxComponent
+            Name: BoxComponent
+            Properties:
+              m_EditorName: BoxComponent
+              ComponentTag: ""
+              m_Position: [0, 0, 0]
+              Rotation: [0, 0, 0]
+              Scale: [1, 1, 1]
+              BodyType: Static
+              HalfExtent: [1, 1, 1]
+          - Type: StaticMeshComponent
+            Name: StaticMeshComponent 2
+            Properties:
+              m_EditorName: StaticMeshComponent 2
+              ComponentTag: ""
+              m_Position: [0, 0, 2.9000001]
+              Rotation: [0, 0, 0]
+              Scale: [1, 1, 1]
+              Mesh: 16419860737094521997
+              Material: 0
+              bIsVisible: true
+              bCastShadows: true
+          - Type: StaticMeshComponent
+            Name: StaticMeshComponent
+            Properties:
+              m_EditorName: StaticMeshComponent
+              ComponentTag: ""
+              m_Position: [0, 0, 0]
+              Rotation: [0, 0, 0]
+              Scale: [1, 1, 1]
+              Mesh: 16419860737094521997
+              Material: 0
+              bIsVisible: true
+              bCastShadows: true
+        IDComponent:
+          ID: 11778466583022950736
+        NameComponent:
+          Name: Actor
+        ActorTagComponent:
+          Tag: ""
+    - Actor:
+        m_TickPriority: 0
+      Components:
+        ObjectComponents:
+          - Type: SceneComponent
+            Name: SceneComponent
+            Properties:
+              m_EditorName: SceneComponent
+              ComponentTag: ""
+              m_Position: [12.1446791, -2.39758134, -3.50381851]
+              Rotation: [0, -0, 0]
+              Scale: [2.83340812, 12.4601145, 1]
+          - Type: BoxComponent
+            Name: BoxComponent
+            Properties:
+              m_EditorName: BoxComponent
+              ComponentTag: ""
+              m_Position: [0, 0, 0]
+              Rotation: [0, 0, 0]
+              Scale: [1, 1, 1]
+              BodyType: Static
+              HalfExtent: [1, 1, 1]
+          - Type: StaticMeshComponent
+            Name: StaticMeshComponent
+            Properties:
+              m_EditorName: StaticMeshComponent
+              ComponentTag: ""
+              m_Position: [0, 0, 0]
+              Rotation: [0, 0, 0]
+              Scale: [1, 1, 1]
+              Mesh: 16419860737094521997
+              Material: 0
+              bIsVisible: true
+              bCastShadows: true
+        IDComponent:
+          ID: 8709459896488609593
+        NameComponent:
+          Name: Actor
+        ActorTagComponent:
+          Tag: ""
+    - Actor:
+        m_TickPriority: 0
+      Components:
+        ObjectComponents:
+          - Type: SceneComponent
+            Name: SceneComponent
+            Properties:
+              m_EditorName: SceneComponent
+              ComponentTag: ""
+              m_Position: [15.9906607, 0, -3.15488815]
+              Rotation: [0, -0, 0]
+              Scale: [1.97270775, 9.65032005, 1]
+          - Type: BoxComponent
+            Name: BoxComponent
+            Properties:
+              m_EditorName: BoxComponent
+              ComponentTag: ""
+              m_Position: [0, 0, 0]
+              Rotation: [0, 0, 0]
+              Scale: [1, 1, 1]
+              BodyType: Static
+              HalfExtent: [1, 1, 1]
+          - Type: StaticMeshComponent
+            Name: StaticMeshComponent
+            Properties:
+              m_EditorName: StaticMeshComponent
+              ComponentTag: ""
+              m_Position: [0, 0, 0]
+              Rotation: [0, 0, 0]
+              Scale: [1, 1, 1]
+              Mesh: 16419860737094521997
+              Material: 0
+              bIsVisible: true
+              bCastShadows: true
+        IDComponent:
+          ID: 5176928014140585771
+        NameComponent:
+          Name: Actor
+        ActorTagComponent:
+          Tag: ""
+    - PlatformerCharacter:
+        m_TickPriority: 0
+        m_DashSpeed: 50
+        m_DashDuration: 0.200000003
+        m_GravityScaleWhileDashing: 0
+        m_GravityScaleAfterDash: 1
+        m_DashAnimationPlaybackSpeed: 1
+        m_DashAnimationBlendIn: 0.0799999982
+        m_DashAnimation: 5066148622529387560
+        m_WallRunForwardSpeed: 6
+        m_WallRunForwardProbeDistance: 2.5
+        m_WallRunSideProbeDistance: 1.75
+        m_WallRunDownProbeDistance: 5
+        m_WallRunWallOffset: 0.550000012
+        m_WallRunMinHorizontalSpeed: 1
+        m_WallRunExitSpeed: 10
+        m_WallJumpSpeed: 8
+        m_WallJumpUpwardSpeed: 6.5
+        m_WallRunAnimationPlaybackSpeed: 1
+        m_WallRunAnimationBlendIn: 0.0799999982
+        m_WallRunStartAnimationLeft: 5356099162207684557
+        m_WallRunStartAnimationRight: 17979160231516990485
+        m_WallRunLoopAnimationLeft: 5930441345039145799
+        m_WallRunLoopAnimationRight: 2665890984701591340
+        m_WallRunEndAnimationLeft: 1074552619039603838
+        m_WallRunEndAnimationRight: 4651996160137736046
+        m_WallJumpAnimationLeft: 15009852468560369880
+        m_WallJumpAnimationRight: 7334339726544220154
+      Components:
+        ObjectComponents:
+          - Type: CapsuleComponent
+            Name: CapsuleComponent
+            Properties:
+              m_EditorName: CapsuleComponent
+              ComponentTag: ""
+              m_Position: [0, 0, 0]
+              Rotation: [0, 0, 0]
+              Scale: [1, 1, 1]
+              BodyType: Kinematic
+              Radius: 0.349999994
+              HalfHeight: 0.899999976
+          - Type: CameraAnchorComponent
+            Name: CameraAnchorComponent
+            Properties:
+              m_EditorName: CameraAnchorComponent
+              ComponentTag: ""
+              m_Position: [0, 0, 1.60000002]
+              Rotation: [0, 0, 0]
+              Scale: [1, 1, 1]
+          - Type: SkeletalMeshComponent
+            Name: SkeletalMeshComponent
+            Properties:
+              m_EditorName: SkeletalMeshComponent
+              ComponentTag: ""
+              m_Position: [0, 0, -0.899999976]
+              Rotation: [0, 0, 90]
+              Scale: [1, 1, 1]
+              Mesh: 11651650350853284826
+              AnimGraph: 9621934235053198691
+              AnimInstanceClass: ""
+              Animation: 0
+              IdleAnimation: 5264775920904475268
+              MoveAnimation: 5719853331471577559
+              StartAnimation: 0
+              StopLocomotionAnimation: 0
+              PivotAnimation: 0
+              JumpAnimation: 6346061951553156378
+              DoubleJumpAnimation: 2876711934119341699
+              InAirAnimation: 0
+              FallingAnimation: 5463217189079348415
+              LandAnimation: 13937619763499414381
+              Material: 0
+              bIsVisible: true
+              bCastShadows: true
+              bDrawSkeleton: false
+              bPlayAnimation: true
+              bLoopAnimation: true
+              bEnableRootMotion: false
+              RootMotionRootLock: RefPose
+              VisualRootMotionStripMode: StripTranslation
+              PlaybackSpeed: 1
+              OverrideBlendOutDuration: 0.0799999982
+          - Type: CharacterMovementComponent
+            Name: CharacterMovementComponent
+            Properties:
+              m_EditorName: CharacterMovementComponent
+              ComponentTag: ""
+              m_MoveAcceleration: 2200
+              m_MaxSpeed: 1000
+              m_Friction: 900
+              m_AirDamping: 0
+              m_Gravity: 980
+              m_GroundHeight: 0
+              m_GroundTolerance: 0.100000001
+              m_RotationMode: OrientToMovement
+              m_MaxWalkSpeed: 5
+              m_JumpVelocity: 4.19999981
+              m_SecondJumpVelocityMultiplier: 1.20000005
+              m_MaxJumpCount: 2
+              m_CoyoteTime: 0.300000012
+              m_JumpBufferTime: 0.600000024
+              m_MaxStepHeight: 0.449999988
+              m_MaxStepDownDistance: 0.449999988
+              m_FloorSweepDistance: 0.100000001
+              m_WalkableFloorZ: 0.699999988
+              m_GroundSnapDistance: 0.0299999993
+              m_AirControl: 0.300000012
+              m_GravityScale: 1
+              m_MaxAcceleration: 100
+              m_GroundFriction: 10
+              m_BrakingDeceleration: 100
+              m_RotationRateYaw: 3000
+              m_bRotateInAir: true
+              m_AirRotationRateMultiplier: 1
+              m_bUseInputDirectionForRotation: true
+              m_bDebugDrawCapsule: false
+              m_bDebugDrawFloor: true
+              m_bDebugDrawVelocity: true
+              m_LaunchProtectionDuration: 0.119999997
+        IDComponent:
+          ID: 15638850766193890461
+        NameComponent:
+          Name: BP_PlatformerCharacter
+        ActorTagComponent:
+          Tag: ""

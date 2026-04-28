@@ -5,7 +5,65 @@
 #include "Core/String.h"
 #include "Core/Math/CoreMath.h"
 
+#include <sstream>
+#include <filesystem>
+
 namespace Rebel::Core::Serialization {
+
+    namespace
+    {
+        const Reflection::TypeInfo* ReadClassPropertyValue(const void* ptr)
+        {
+            const Reflection::TypeInfo* type = nullptr;
+            if (ptr)
+                memcpy(&type, ptr, sizeof(type));
+            return type;
+        }
+
+        void WriteClassPropertyValue(void* ptr, const Reflection::TypeInfo* type)
+        {
+            if (!ptr)
+                return;
+
+            memcpy(ptr, &type, sizeof(type));
+        }
+
+        YAML::Node FindMapValue(const YAML::Node& node, const char* key)
+        {
+            if (!node || !node.IsMap() || !key)
+                return YAML::Node();
+
+            for (const auto& entry : node)
+            {
+                const YAML::Node& entryKey = entry.first;
+                if (!entryKey || !entryKey.IsScalar())
+                    continue;
+
+                const std::string currentKey = entryKey.Scalar();
+                if (currentKey == key)
+                    return entry.second;
+            }
+
+            return YAML::Node();
+        }
+
+        template<typename TValue>
+        bool TryReadScalar(const YAML::Node& node, TValue& outValue)
+        {
+            if (!node || !node.IsDefined() || !node.IsScalar())
+                return false;
+
+            try
+            {
+                outValue = node.as<TValue>();
+                return true;
+            }
+            catch (const YAML::Exception&)
+            {
+                return false;
+            }
+        }
+    }
 
     // -------------------- Saving --------------------
     void YamlSerializer::BeginObject(const String& name)
@@ -31,11 +89,37 @@ namespace Rebel::Core::Serialization {
         
     bool YamlSerializer::SaveToFile(const String& filename) const
     {
+        std::error_code ec;
+        const std::filesystem::path outPath(filename.c_str());
+        if (std::filesystem::exists(outPath, ec))
+        {
+            std::filesystem::permissions(
+                outPath,
+                std::filesystem::perms::owner_write |
+                    std::filesystem::perms::group_write |
+                    std::filesystem::perms::others_write,
+                std::filesystem::perm_options::add,
+                ec);
+        }
+
         std::ofstream out(filename.c_str());
         if (!out.is_open())
             return false;
         out << Root;
         return true;
+    }
+
+    String YamlSerializer::ToString() const
+    {
+        std::stringstream ss;
+        ss << Root;
+        return String(ss.str().c_str());
+    }
+
+    void YamlSerializer::Reset()
+    {
+        Root = YAML::Node();
+        NodeStack.Clear();
     }
     
     // -------------------- Loading --------------------
@@ -51,6 +135,22 @@ namespace Rebel::Core::Serialization {
         catch (const std::exception& e)
         {
             std::cout << "Failed to load YAML: " << e.what() << "\n";
+            return false;
+        }
+    }
+
+    bool YamlSerializer::LoadFromString(const String& yamlText)
+    {
+        try
+        {
+            Root = YAML::Load(yamlText.c_str());
+            NodeStack.Clear();
+            NodeStack.Add(Root);
+            return true;
+        }
+        catch (const std::exception& e)
+        {
+            std::cout << "Failed to load YAML string: " << e.what() << "\n";
             return false;
         }
     }
@@ -115,29 +215,29 @@ void YamlSerializer::DeserializeTypeRecursive(const Reflection::TypeInfo* typeIn
 
     for (const auto& prop : typeInfo->Properties)
     {
-        // If you want the same behavior as saving, you can skip Transient here too.
-        // if (HasFlag(prop.Flags, Reflection::EPropertyFlags::Transient)) continue;
+        if (HasFlag(prop.Flags, Reflection::EPropertyFlags::Transient))
+            continue;
 
         char* ptr = reinterpret_cast<char*>(obj) + prop.Offset;
 
         switch (prop.Type)
         {
-        case Reflection::EPropertyType::Int8:   { auto n = node[prop.Name.c_str()]; if(n) *reinterpret_cast<int8*>(ptr)   = n.as<int>(); } break;
-        case Reflection::EPropertyType::UInt8:  { auto n = node[prop.Name.c_str()]; if(n) *reinterpret_cast<uint8*>(ptr)  = n.as<unsigned>(); } break;
-        case Reflection::EPropertyType::Int16:  { auto n = node[prop.Name.c_str()]; if(n) *reinterpret_cast<int16*>(ptr)  = n.as<int>(); } break;
-        case Reflection::EPropertyType::UInt16: { auto n = node[prop.Name.c_str()]; if(n) *reinterpret_cast<uint16*>(ptr) = n.as<unsigned>(); } break;
-        case Reflection::EPropertyType::Int32:  { auto n = node[prop.Name.c_str()]; if(n) *reinterpret_cast<int32*>(ptr)  = n.as<int32>(); } break;
-        case Reflection::EPropertyType::UInt32: { auto n = node[prop.Name.c_str()]; if(n) *reinterpret_cast<uint32*>(ptr) = n.as<uint32>(); } break;
-        case Reflection::EPropertyType::Int64:  { auto n = node[prop.Name.c_str()]; if(n) *reinterpret_cast<int64*>(ptr)  = n.as<int64>(); } break;
-        case Reflection::EPropertyType::UInt64: { auto n = node[prop.Name.c_str()]; if(n) *reinterpret_cast<uint64*>(ptr) = n.as<uint64>(); } break;
-        case Reflection::EPropertyType::Float:  { auto n = node[prop.Name.c_str()]; if(n) *reinterpret_cast<Float*>(ptr)  = n.as<float>(); } break;
-        case Reflection::EPropertyType::Double: { auto n = node[prop.Name.c_str()]; if(n) *reinterpret_cast<Double*>(ptr) = n.as<double>(); } break;
-        case Reflection::EPropertyType::Bool:   { auto n = node[prop.Name.c_str()]; if(n) *reinterpret_cast<Bool*>(ptr)   = n.as<bool>(); } break;
-        case Reflection::EPropertyType::String: { auto n = node[prop.Name.c_str()]; if(n) *reinterpret_cast<String*>(ptr) = n.as<String>(); } break;
+        case Reflection::EPropertyType::Int8:   { auto n = FindMapValue(node, prop.Name.c_str()); int value = 0; if (TryReadScalar(n, value)) *reinterpret_cast<int8*>(ptr) = static_cast<int8>(value); } break;
+        case Reflection::EPropertyType::UInt8:  { auto n = FindMapValue(node, prop.Name.c_str()); unsigned value = 0; if (TryReadScalar(n, value)) *reinterpret_cast<uint8*>(ptr) = static_cast<uint8>(value); } break;
+        case Reflection::EPropertyType::Int16:  { auto n = FindMapValue(node, prop.Name.c_str()); int value = 0; if (TryReadScalar(n, value)) *reinterpret_cast<int16*>(ptr) = static_cast<int16>(value); } break;
+        case Reflection::EPropertyType::UInt16: { auto n = FindMapValue(node, prop.Name.c_str()); unsigned value = 0; if (TryReadScalar(n, value)) *reinterpret_cast<uint16*>(ptr) = static_cast<uint16>(value); } break;
+        case Reflection::EPropertyType::Int32:  { auto n = FindMapValue(node, prop.Name.c_str()); int32 value = 0; if (TryReadScalar(n, value)) *reinterpret_cast<int32*>(ptr) = value; } break;
+        case Reflection::EPropertyType::UInt32: { auto n = FindMapValue(node, prop.Name.c_str()); uint32 value = 0; if (TryReadScalar(n, value)) *reinterpret_cast<uint32*>(ptr) = value; } break;
+        case Reflection::EPropertyType::Int64:  { auto n = FindMapValue(node, prop.Name.c_str()); int64 value = 0; if (TryReadScalar(n, value)) *reinterpret_cast<int64*>(ptr) = value; } break;
+        case Reflection::EPropertyType::UInt64: { auto n = FindMapValue(node, prop.Name.c_str()); uint64 value = 0; if (TryReadScalar(n, value)) *reinterpret_cast<uint64*>(ptr) = value; } break;
+        case Reflection::EPropertyType::Float:  { auto n = FindMapValue(node, prop.Name.c_str()); Float value = 0.0f; if (TryReadScalar(n, value)) *reinterpret_cast<Float*>(ptr) = value; } break;
+        case Reflection::EPropertyType::Double: { auto n = FindMapValue(node, prop.Name.c_str()); Double value = 0.0; if (TryReadScalar(n, value)) *reinterpret_cast<Double*>(ptr) = value; } break;
+        case Reflection::EPropertyType::Bool:   { auto n = FindMapValue(node, prop.Name.c_str()); Bool value = false; if (TryReadScalar(n, value)) *reinterpret_cast<Bool*>(ptr) = value; } break;
+        case Reflection::EPropertyType::String: { auto n = FindMapValue(node, prop.Name.c_str()); String value; if (TryReadScalar(n, value)) *reinterpret_cast<String*>(ptr) = value; } break;
 
         case Reflection::EPropertyType::Vector3:
         {
-            auto n = node[prop.Name.c_str()];
+            auto n = FindMapValue(node, prop.Name.c_str());
             if (n && n.IsSequence() && n.size() == 3)
             {
                 Vector3& v = *reinterpret_cast<Vector3*>(ptr);
@@ -152,28 +252,45 @@ void YamlSerializer::DeserializeTypeRecursive(const Reflection::TypeInfo* typeIn
         {
             // matches your current serialization key: "<PropName>Asset handle"
             String key = prop.Name;
-            auto n = node[key.c_str()];
-            if (n)
+            auto n = FindMapValue(node, key.c_str());
+            uint64 h = 0;
+            if (TryReadScalar(n, h))
             {
-                uint64 h = n.as<uint64>();
                 auto* ref = reinterpret_cast<AssetPtrBase*>(ptr);
                 ref->SetHandle((AssetHandle)h);
             }
             break;
         }
 
+        case Reflection::EPropertyType::Class:
+        {
+            auto n = FindMapValue(node, prop.Name.c_str());
+            String className;
+            if (!TryReadScalar(n, className))
+                break;
+
+            const Reflection::TypeInfo* selectedType = nullptr;
+            if (className.length() > 0)
+                selectedType = Reflection::TypeRegistry::Get().GetType(className);
+
+            if (selectedType && prop.SubclassBaseType && !selectedType->IsA(prop.SubclassBaseType))
+                break;
+
+            WriteClassPropertyValue(ptr, selectedType);
+            break;
+        }
+
         case Reflection::EPropertyType::MaterialHandle:
         {
-            // Your serializer currently writes "MaterialHandle" instead of prop.Name,
-            // so read both to be safe.
-            /*auto n = node[prop.Name.c_str()];
-            if (!n) n = node[prop.Name.c_str()];
+            auto n = FindMapValue(node, prop.Name.c_str());
+            if (!n)
+                n = FindMapValue(node, "MaterialHandle");
 
-            if (n)
+            uint32 value = 0;
+            if (TryReadScalar(n, value))
             {
-                /*auto& mh = *reinterpret_cast<MaterialHandle*>(ptr);
-                mh.Id = n.as<uint32>();#1#
-            }*/
+                *reinterpret_cast<uint32*>(ptr) = value;
+            }
             break;
         }
 
@@ -182,7 +299,7 @@ void YamlSerializer::DeserializeTypeRecursive(const Reflection::TypeInfo* typeIn
             break;
         case Reflection::EPropertyType::Enum:
             {
-                auto n = node[prop.Name.c_str()];
+                auto n = FindMapValue(node, prop.Name.c_str());
                 if (!n || !n.IsScalar() || !prop.Enum)
                     break;
 
@@ -244,8 +361,8 @@ void YamlSerializer::DeserializeTypeRecursive(const Reflection::TypeInfo* typeIn
         // 2️⃣ Serialize properties declared on THIS type
         for (const auto& prop : typeInfo->Properties)
         {
-            /*if (HasFlag(prop.Flags, Reflection::EPropertyFlags::Transient))
-                continue;*/
+            if (HasFlag(prop.Flags, Reflection::EPropertyFlags::Transient))
+                continue;
     
             const char* ptr = static_cast<const char*>(obj) + prop.Offset;
     
@@ -297,13 +414,19 @@ void YamlSerializer::DeserializeTypeRecursive(const Reflection::TypeInfo* typeIn
                 break;
     
                 }
-            case Reflection::EPropertyType::MaterialHandle:
-                Write("MaterialHandle",String("0"));
+            case Reflection::EPropertyType::Class:
+            {
+                const Reflection::TypeInfo* type = ReadClassPropertyValue(ptr);
+                Write(prop.Name, type ? type->Name : String());
                 break;
+            }
+            case Reflection::EPropertyType::MaterialHandle:
+            {
+                Write(prop.Name, *reinterpret_cast<const uint32*>(ptr));
+                break;
+            }
 
             case Reflection::EPropertyType::Unknown:
-                
-                Write("Unknown Type",String("Unserialized"));
                 break;
             case Reflection::EPropertyType::Enum:
                 {

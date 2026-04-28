@@ -13,6 +13,9 @@ project "Editor"
         "YAML_CPP_STATIC_DEFINE"
     }
 
+    pchheader "Editor/EditorPch.h"
+    pchsource "src/EditorPch.cpp"
+
     files { "**.h", "**.cpp" }
     includedirs { IncludeDir.Editor, IncludeDir.RebelEngine, IncludeDir.Core, IncludeDir.vendor,IncludeDir.yaml_cpp, IncludeDir.glfw ,IncludeDir.GLAD,IncludeDir.imgui,IncludeDir.assimp,IncludeDir.ImGuizmo}
     links { "RebelEngine", "Core","ImGui","GLAD","GLFW","assimp","yaml-cpp","ImGuizmo" }
@@ -21,7 +24,7 @@ project "Editor"
 
     filter "system:windows"
         systemversion "latest"
-        buildoptions { "/utf-8" }
+        buildoptions { "/utf-8", "/FIEditor/EditorPch.h"}
 
     filter "configurations:Debug"
         runtime "Debug"

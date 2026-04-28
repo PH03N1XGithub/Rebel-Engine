@@ -4,6 +4,13 @@ workspace "RebelEngine"
     configurations { "Debug", "Release" }
     location "Build"
 
+    filter "action:vs*"
+        flags { "MultiProcessorCompile" }
+    filter "configurations:Debug"
+        editandcontinue "Off"
+        debugformat "c7"
+    filter {}
+
 --==============================
 -- Root Path (absolute)
 --==============================
@@ -55,3 +62,8 @@ include "Core/premake5.lua"
 include "RebelEngine/premake5.lua"
 include "Editor/premake5.lua"
 include "Game/premake5.lua"
+
+group "Tests"
+    include "Tests/CoreTests/premake5.lua"
+    include "Tests/EngineTests/premake5.lua"
+group ""

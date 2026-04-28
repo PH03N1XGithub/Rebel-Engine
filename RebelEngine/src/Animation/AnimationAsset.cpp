@@ -1,5 +1,5 @@
-#include "EnginePch.h"
-#include "Animation/AnimationAsset.h"
+﻿#include "Engine/Framework/EnginePch.h"
+#include "Engine/Animation/AnimationAsset.h"
 
 namespace
 {
@@ -21,6 +21,11 @@ namespace
         if (count > 0)
             ar.ReadBytes(values.Data(), count * sizeof(T));
     }
+}
+
+AnimationAsset::AnimationAsset()
+{
+    SerializedVersion = kCurrentVersion;
 }
 
 void AnimationAsset::Serialize(BinaryWriter& ar)
@@ -131,3 +136,5 @@ const AnimationTrack* AnimationAsset::FindTrackForBone(int32 boneIndex) const
     }
     return nullptr;
 }
+
+

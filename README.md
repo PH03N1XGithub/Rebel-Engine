@@ -3,11 +3,11 @@
 ![C++20](https://img.shields.io/badge/C%2B%2B-20-blue)
 ![Windows](https://img.shields.io/badge/platform-Windows-0078D6)
 
-**Status:** Active development  
-**Current milestone:** Character Controller & Movement System  
-**Next milestone:** Camera System (Player Camera Manager & Follow Rig)
+**Status:** Active development with a working 3C and animation foundation  
+**Current milestone:** Advanced animation-driven locomotion work (motion warping, root offsets, root motion improvements)  
+**Next milestone:** ALS / GASP-style locomotion stack
 
-Rebel Engine is a custom C++ engine built as a practical sandbox for responsive **3C** gameplay, animation-driven locomotion, and tooling. It is designed for fast iteration on core third-person foundations, especially **3C (Character, Camera, Controls)**. The runtime stays explicit and modular, with clear paths to scale as gameplay and locomotion systems evolve.
+Rebel Engine is a custom C++ engine built around responsive **3C** gameplay, animation-driven locomotion, and in-editor iteration. It is primarily a **3C-focused gameplay engine** targeting high-quality third-person movement, camera, and animation systems similar in scope to modern character gameplay pipelines. The project already has a working foundation: a serious character movement component, a gameplay camera flow built around a `PlayerCameraManager`-style runtime actor, and a runtime animation pipeline with pose evaluation, animation graph workflows, and root motion extraction.
 
 ## Table of Contents
 
@@ -15,7 +15,7 @@ Rebel Engine is a custom C++ engine built as a practical sandbox for responsive 
 - [Engine Direction](#engine-direction)
 - [Design Principles](#design-principles)
 - [Animation \& Locomotion Direction](#animation--locomotion-direction)
-- [Screenshots \& Editor Views](#screenshots--editor-views)
+- [Screenshots \& Systems Overview](#screenshots--systems-overview)
 - [Editor Interaction (GIF)](#editor-interaction-gif)
 - [Video Demo](#video-demo)
 - [Key Features](#key-features)
@@ -55,16 +55,18 @@ The build script expects Premake at this exact location.
 
 ## Engine Direction
 
-Rebel Engine is evolving toward a gameplay-first architecture with strong **3C foundations**, responsive control loops, and clear runtime behavior.
+Rebel Engine is evolving as a gameplay-first runtime with strong **3C foundations**, explicit update flow, and a clear emphasis on third-person character systems.
 
 Current direction:
 
-- **Responsive character control and camera workflows**
-- **Animation-driven locomotion runtime growth**
+- **Production-style character movement foundation** with walking/falling modes, acceleration, braking, friction, floor detection, slope handling, step-up/step-down, collision resolution, wall sliding, and animation-facing locomotion state output.
+- **Gameplay camera flow** built around `PlayerController` ownership and a `PlayerCameraManager`-style actor, with follow camera behavior, pivot/anchor targeting, optional camera lag, and camera collision handling.
+- **Runtime animation foundation** with pose evaluation, core animation graph workflows, clip/blend/state machine support, and root motion extraction integrated into the runtime update path.
+- **Current locomotion direction** focused on motion warping, root offsets, and stronger root motion integration leading into an ALS / GASP-style locomotion stack.
 - **Fast gameplay iteration in-editor**
 - **Deterministic runtime update flow**
 
-The engine is an evolving foundation focused on responsive gameplay and rapid iteration, with clear extension points.
+The engine is an evolving gameplay foundation focused on responsive third-person control, clear runtime behavior, and practical extension points for more advanced locomotion work.
 
 ## Design Principles
 
@@ -76,23 +78,35 @@ The engine is an evolving foundation focused on responsive gameplay and rapid it
 
 ## Animation & Locomotion Direction
 
-The animation runtime is implemented and functional. Pose evaluation runs per-frame, bone palettes are generated at runtime, and skeletal skinning consumes evaluated animation data in render submission. Animation playback is integrated into runtime update phases and is structured to extend cleanly into locomotion/controller work.
+The basic animation runtime is complete and already integrated into gameplay flow. Animation playback, pose evaluation, runtime palette generation, and root motion extraction are functional. A basic animation graph system is also in place, with clip, blend, and state machine nodes used to drive runtime animation workflows.
 
 Current runtime pipeline:
 
 ```text
-Animation Clip -> Pose Evaluation -> Bone Palette -> Skinning -> Render
+Intent -> Movement -> Animation Graph / Playback -> Pose Evaluation -> Root Motion Extraction -> Bone Palette -> Camera -> Render
 ```
 
-Upcoming 3C integration flow:
+Current:
 
-```text
-Intent -> Movement -> Animation -> Camera
-```
+- **Basic animation graph is working**
+- **Root motion extraction is implemented**
+- **Movement, animation, and camera already run as part of the active runtime loop**
 
-This keeps the controller and locomotion milestone aligned with the existing animation runtime.
+In progress:
 
-## Screenshots & Editor Views
+- **Motion warping**
+- **Root offsetting**
+- **Root motion quality and integration improvements**
+
+Next major milestone:
+
+- **ALS / GASP-style locomotion system**
+- **State-driven locomotion**
+- **Directional movement**
+- **Pivots / starts / stops**
+- **Animation-driven movement integration**
+
+## Screenshots & Systems Overview
 
 These screenshots highlight the editor workflow, debugging tools, and rendering capabilities. Images are stored in `docs/images/`.
 
@@ -134,6 +148,43 @@ Collider debug rendering verifies generated physics shapes across editor and run
 
 Animation playback demonstrating runtime pose evaluation and skeletal deformation.
 
+---
+
+### Gameplay (Character Movement & Camera)
+
+This section showcases the current third-person gameplay foundation built on top of the Character Movement Component and Player Camera system. The setup is similar in scope to a third-person template, extended with additional movement features and responsive camera behavior.
+
+<!-- Replace with actual GIFs or images -->
+![third_person_gameplay](docs/images/gameplay_third_person.gif)
+
+Third-person gameplay driven by the CharacterMovementComponent and PlayerCameraManager-style camera system.
+
+- Grounded movement and falling
+- Step-up and slope handling
+- Camera follow with pivot/anchor system
+- Camera collision and lag
+- Extended movement features (wall run, double jump, coyote time)
+
+---
+
+### Animation Graph
+
+The engine includes a runtime animation graph system used to drive locomotion and animation blending. The graph supports clip playback, blending, and state machine-driven animation flow.
+
+![anim_graph](docs/images/anim_graph.png)
+
+Node-based animation graph with clip, blend, and state machine nodes driving runtime animation.
+
+---
+
+### Animation Editor
+
+The animation editor provides tooling for inspecting animation clips, previewing skeletal motion, and debugging runtime animation behavior.
+
+![anim_editor](docs/images/anim_editor.png)
+
+Animation asset editor with timeline, playback controls, and skeletal preview.
+
 ## Editor Interaction (GIF)
 
 ![editor_demo](https://github.com/user-attachments/assets/ea7b42e2-a5d3-46dd-af8c-0266b2360626)
@@ -146,6 +197,10 @@ Coming soon.
 
 ## Key Features
 
+- **3C-focused gameplay foundation:** movement, camera, and animation systems are active runtime systems, not just planned architecture.
+- **Character movement component:** production-style third-person movement foundation with grounded/falling modes, slope handling, step-up logic, collision resolution, and wall sliding.
+- **Player camera manager workflow:** `PlayerController`-owned follow camera with pivot targeting, camera lag, and collision handling.
+- **Runtime animation graph foundation:** pose evaluation plus clip, blend, and state machine workflows with root motion extraction.
 - **Reflection-driven tooling:** runtime type metadata powers modules, inspector UI, and serialization.
 - **Deterministic tick phases:** explicit update order (`PreTick`, `Physics`, `Render`, etc.).
 - **Actor + EnTT architecture:** actor ownership with ECS query flexibility.
@@ -403,11 +458,40 @@ Input tracks per-frame key/button/mouse/scroll state from window events. It prov
 
 </details>
 
-### 8) Event / Messaging
+### 8) Character Movement System
+
+The character movement layer is implemented as a dedicated `CharacterMovementComponent` with explicit walking/falling modes and floor-aware collision handling. It is built to support responsive third-person movement first, then feed locomotion and animation systems with stable state.
+
+Current capabilities:
+
+- Grounded movement with acceleration, braking, friction, and jump support.
+- Falling with gravity, air control, and landing transitions.
+- Iterative collision resolution and wall sliding.
+- Step-up / step-down handling for low obstacles.
+- Walkable-floor evaluation and slope-aware movement.
+- Animation-facing locomotion state output for downstream animation logic.
+
+This is no longer a future placeholder system; it is part of the active runtime foundation for gameplay and locomotion work.
+
+### 9) Player Camera System
+
+The gameplay camera is implemented around a `PlayerCameraManager`-style actor owned by `PlayerController`. It resolves a target pivot from the controlled pawn, computes a follow view from controller rotation, and updates the runtime camera after movement.
+
+Current capabilities:
+
+- Follow camera targeting through `PlayerController` possession flow.
+- `CameraAnchorComponent` support for authored pivots on characters.
+- Configurable follow distance, pivot offset, and camera offset.
+- Optional camera lag.
+- Collision probing to keep the camera out of blocking geometry.
+
+This gives the engine a working gameplay camera path separate from the free-fly editor camera.
+
+### 10) Event / Messaging
 
 Event/messaging broadcasts engine and window events to interested systems. This keeps event producers and consumers decoupled while modules remain independently testable.
 
-### 9) Time, Tick, and Update Phases
+### 11) Time, Tick, and Update Phases
 
 Time/tick phases define explicit per-frame ordering for modules and engine logic. This makes it straightforward to add movement, camera, and animation systems without hidden update-order bugs.
 
@@ -427,9 +511,9 @@ Time/tick phases define explicit per-frame ordering for modules and engine logic
 
 </details>
 
-### 10) Animation System
+### 12) Animation System
 
-The animation system evaluates skeletal animation poses at runtime and produces bone palettes consumed by rendering and gameplay systems.
+The animation system evaluates skeletal animation poses at runtime and produces bone palettes consumed by rendering and gameplay systems. The basic playback and pose pipeline is complete, and a basic animation graph system now sits on top of it for runtime state-driven animation flow.
 
 Responsibilities:
 
@@ -437,13 +521,14 @@ Responsibilities:
 - Pose sampling and bone hierarchy evaluation.
 - Final skinning palette generation.
 - Root motion extraction for locomotion integration.
+- Animation graph evaluation for clip, blend, and state machine nodes.
 
 Runtime role:
 
 - Executes during the runtime `Tick` phase before render submission.
 - Updates animation state on `SkeletalMeshComponent` instances.
 - Outputs evaluated pose data for rendering and gameplay systems.
-- Supplies root motion deltas for upcoming character movement systems.
+- Supplies locomotion-facing pose and root motion outputs to active gameplay systems.
 
 `Animation System` is the runtime subsystem, `Animation Runtime` is the internal evaluation pipeline, and `AnimationModule` is the module implementation.
 
@@ -457,9 +542,33 @@ Animation clips are sampled by runtime time progression on `SkeletalMeshComponen
 
 Per-frame evaluation builds bind/local pose data, samples animation tracks, evaluates the bone hierarchy from local to model space, and produces the final skinning palette (`globalPose * inverseBind`). The resulting palette is stored on component runtime data for rendering and debugger inspection.
 
+### Animation Graph
+
+The engine includes a basic node-based animation graph asset used for runtime animation workflows. At the README level, the important point is that animation logic is no longer limited to playing a single clip.
+
+Current graph building blocks:
+
+- **Animation clip nodes** for direct sampling.
+- **Blend nodes** for parameter-driven pose mixing.
+- **State machine nodes** for state-based animation flow.
+
+This provides the current foundation for locomotion graphs while leaving room for more advanced transition logic and locomotion features.
+
 ### Root Motion Support
 
-Root-driver motion extraction is supported through `AnimationAsset::m_RootDriver` data and runtime root-delta sampling. Root driver deltas are applied during pose evaluation and are structured so animation-driven locomotion can optionally feed actor movement systems in the character-controller milestone.
+Root-driver motion extraction is supported through `AnimationAsset::m_RootDriver` data and runtime root-delta sampling. The pipeline already supports enabling root motion on skeletal meshes, root locking strategies, and visual root stripping modes for preview and playback.
+
+Current state:
+
+- Root motion extraction is implemented.
+- Runtime root motion can be enabled per skeletal mesh.
+- Root lock and visual strip modes are exposed for authoring/debug workflows.
+
+Current limitations:
+
+- Motion warping is still in progress.
+- Root offsetting is still in progress.
+- Root motion integration is functional but still being expanded for more advanced locomotion cases.
 
 ### Runtime Integration
 
@@ -506,19 +615,27 @@ The engine switches between the free editor camera and the scene primary camera 
 - **Runtime/editor mode separation** avoids cross-contamination of state during iteration.
 - **Reflection + component registry** keeps control/camera parameters easy to expose and tune in editor.
 - **Fixed-step physics** provides a stable base for movement handoff.
+- **Movement and camera are already part of the runtime loop**, not just planned architecture.
 
 ### Current state
 
 - **Controls**:
   - Free-fly editor camera input (`WASD`, `Q/E`, RMB look, scroll zoom) in `RebelEngine/src/Camera.cpp`.
+  - Gameplay input is processed through `PlayerController` before simulation.
 - **Camera**:
   - Editor camera + scene `CameraComponent` primary camera workflow.
+  - `PlayerCameraManager` follow camera is implemented and integrated into possession/runtime flow.
+  - Camera pivoting uses `CameraAnchorComponent` when present and supports follow distance, offsets, lag, and collision checks.
 - **Character/locomotion**:
-  - Dedicated character movement component/controller is the next milestone.
+  - `CharacterMovementComponent` is implemented and functional.
+  - Supports grounded movement, falling, floor detection, collision resolution, step-up logic, and slope handling.
+  - Produces locomotion state data that animation systems can consume.
 - **Skeletal/animation**:
   - Skeletal meshes and skeleton assets load and render.
   - Skeleton debug drawing is active.
-  - Runtime animation evaluation, pose updates, and skinning palette generation are active in `AnimationModule`.
+  - Runtime animation playback, pose evaluation, and skinning palette generation are complete in `AnimationModule`.
+  - Basic animation graph support is active for clip, blend, and state machine workflows.
+  - Root motion extraction exists and is being actively expanded.
 
 ### Planned (next phase)
 
@@ -528,7 +645,7 @@ Next-phase integration focus:
 Intent -> Movement -> Animation -> Camera
 ```
 
-This milestone centers on Character Controller & Movement System integration on top of the active animation runtime.
+The current foundation is in place. The next phase is focused on higher-level locomotion behavior: motion warping, root offsets, improved root motion handling, and then an ALS / GASP-style locomotion stack on top of the existing 3C runtime.
 
 ## Build & Run
 
@@ -589,6 +706,7 @@ Header-only integrations in engine include:
 
 ```text
 RebelEngine/
+|-- Build/                       # Generated solution/projects and build outputs
 |-- Core/
 |   |-- include/Core/
 |   |   |-- Containers/           # TArray, TMap
@@ -597,21 +715,32 @@ RebelEngine/
 |   |   |-- Reflection.h          # Type/property metadata system
 |   |   |-- Log.h, Timer.h, String.h, CoreMemory.h
 |   `-- src/
+|-- doc/                         # Notes, diagrams, and supporting documentation assets
 |-- RebelEngine/
-|   |-- include/
-|   |   |-- AssetManager/
-|   |   |-- Animation/
-|   |   |-- Components.h
-|   |   |-- Scene.h, Actor.h, BaseEngine.h
-|   |   `-- RenderModule.h, PhysicsModule.h, InputModule.h
+|   |-- include/Engine/
+|   |   |-- Animation/           # Animation assets, anim instances, anim graph types
+|   |   |-- Assets/              # Asset abstractions and asset pointer types
+|   |   |-- Components/          # Scene, camera, skeletal mesh, primitive components
+|   |   |-- Framework/           # Engine bootstrapping, reflection extensions, window/app core
+|   |   |-- Gameplay/            # Character, controller, camera, movement gameplay framework
+|   |   |-- Input/               # Input actions and player input plumbing
+|   |   |-- Physics/             # Traces, collision channels, physics-facing helpers
+|   |   |-- Rendering/           # Render API, buffers, camera view, mesh rendering types
+|   |   `-- Scene/               # Scene, world, actor model
 |   `-- src/
-|       |-- AssetManager/
 |       |-- Animation/
-|       |-- RenderModule.cpp
-|       |-- PhysicsSystem.cpp
-|       `-- Scene.cpp, Actor.cpp, BaseEngine.cpp
+|       |-- AssetManager/
+|       |-- Assets/
+|       |-- Components/
+|       |-- Framework/
+|       |-- Gameplay/
+|       |-- Input/
+|       |-- Physics/
+|       |-- Rendering/
+|       `-- Scene/
 |-- Editor/
 |   |-- include/
+|   |-- vendor/                  # Editor-only third-party integrations
 |   |-- src/
 |   |   |-- EditorEngine.cpp
 |   |   |-- ImGuiModule.cpp
@@ -619,22 +748,33 @@ RebelEngine/
 |   `-- assets/                  # sample .rasset + source model files
 |-- Game/
 |   `-- src/main.cpp
+|-- Tests/
+|   |-- CoreTests/
+|   `-- EngineTests/
 |-- scripts/generate_build.bat
+|-- vendor/                      # Third-party libraries used by engine/editor
 `-- Premake5.lua
 ```
 
 ## Roadmap (3C / Animation Priorities)
 
-1. Completed: runtime animation evaluation in `AnimationModule` (evaluated pose data drives skeletal deformation).
-2. Character Controller & Movement System.
-3. Locomotion state handling & motion blending.
-4. Camera rig integration with movement states.
-5. Motion warping & advanced locomotion features.
+1. [Done] Character Movement Component (CMC)
+2. [Done] Player Camera System (PCM)
+3. [Done] Runtime Animation System + Animation Graph Foundation
+4. [In Progress] Advanced Animation Features
+   - Motion Warping
+   - Root Offsets
+   - Improved Root Motion
+5. [Next Major Milestone]
+   - ALS / GASP-style locomotion stack
+6. Future
+   - Animation polish
+   - Gameplay systems on top of the 3C foundation
 
 
 ## Future Documentation
 
 Planned documentation expansions:
 
-- Animation system design and pose evaluation flow.
-- Character controller architecture and movement state flow.
+- Animation graph authoring and runtime flow.
+- Root motion handling, limitations, and planned extensions.

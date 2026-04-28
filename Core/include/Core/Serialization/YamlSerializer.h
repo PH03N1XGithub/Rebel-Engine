@@ -16,6 +16,8 @@ namespace Rebel::Core::Serialization {
 		void BeginObject(const String& name) override;
 		void EndObject() override;
 		bool SaveToFile(const String& filename) const override;
+		String ToString() const;
+		void Reset();
 
 		template<typename T>
 		void Write(const String& key, const T& value);
@@ -28,6 +30,7 @@ namespace Rebel::Core::Serialization {
 
 		// Loading
 		bool LoadFromFile(const String& filename) override;
+		bool LoadFromString(const String& yamlText);
 		void BeginObjectRead(const String& name);
 		void EndObjectRead();
 

@@ -1,0 +1,161 @@
+Scene:
+  GameMode:
+    Type: GameMode
+    GameMode:
+      m_DefaultPawnPrefab: 0
+      m_DefaultPawnClass: Character
+      m_PlayerControllerClass: PlayerController
+  Actors:
+    - Actor:
+        m_TickPriority: 0
+      Components:
+        IDComponent:
+          ID: 13078378909207541994
+        NameComponent:
+          Name: Actor
+        ActorTagComponent:
+          Tag: ""
+        SceneComponent:
+          ComponentTag: ""
+          m_Position: [0, 0, -3.9877336]
+          Rotation: [0, -0, 0]
+          Scale: [10, 10, 1]
+        BoxComponent:
+          ComponentTag: ""
+          m_Position: [0, 0, 0]
+          Rotation: [0, 0, 0]
+          Scale: [1, 1, 1]
+          BodyType: Static
+          HalfExtent: [1, 1, 1]
+        StaticMeshComponent:
+          ComponentTag: ""
+          m_Position: [0, 0, 0]
+          Rotation: [0, 0, 0]
+          Scale: [1, 1, 1]
+          Mesh: 16419860737094521997
+          Material: 0
+          bIsVisible: true
+          bCastShadows: true
+    - Actor:
+        m_TickPriority: 0
+      Components:
+        IDComponent:
+          ID: 5213882736866411812
+        NameComponent:
+          Name: Actor
+        ActorTagComponent:
+          Tag: ""
+        SceneComponent:
+          ComponentTag: ""
+          m_Position: [-2.8641715, 1.87167883, 0.0406832099]
+          Rotation: [0, -0, 0]
+          Scale: [1, 1, 1]
+        SkeletalMeshComponent:
+          ComponentTag: ""
+          m_Position: [0, 0, 0]
+          Rotation: [0, 0, 0]
+          Scale: [1, 1, 1]
+          Mesh: 14960615213808129076
+          Animation: 7629750481833704139
+          IdleAnimation: 0
+          MoveAnimation: 0
+          JumpAnimation: 0
+          FallingAnimation: 0
+          LandAnimation: 0
+          Material: 0
+          bIsVisible: true
+          bCastShadows: true
+          bDrawSkeleton: false
+          bPlayAnimation: true
+          bLoopAnimation: true
+          PlaybackSpeed: 1
+    - Actor:
+        m_TickPriority: 0
+      Components:
+        IDComponent:
+          ID: 11778466583022950736
+        NameComponent:
+          Name: Actor
+        ActorTagComponent:
+          Tag: ""
+        SceneComponent:
+          ComponentTag: ""
+          m_Position: [-0.75360018, -19.6256065, -0.948143721]
+          Rotation: [74.8840637, -0, 0]
+          Scale: [3.20455313, 0.999999106, 20.1546745]
+        BoxComponent:
+          ComponentTag: ""
+          m_Position: [0, 0, 0]
+          Rotation: [0, 0, 0]
+          Scale: [1, 1, 1]
+          BodyType: Static
+          HalfExtent: [1, 1, 1]
+        StaticMeshComponent:
+          ComponentTag: ""
+          m_Position: [0, 0, 0]
+          Rotation: [0, 0, 0]
+          Scale: [1, 1, 1]
+          Mesh: 16419860737094521997
+          Material: 0
+          bIsVisible: true
+          bCastShadows: true
+    - Actor:
+        m_TickPriority: 0
+      Components:
+        IDComponent:
+          ID: 8709459896488609593
+        NameComponent:
+          Name: Actor
+        ActorTagComponent:
+          Tag: ""
+        SceneComponent:
+          ComponentTag: ""
+          m_Position: [12.1446791, 2.97758675, -3.50381851]
+          Rotation: [0, -0, 0]
+          Scale: [2.83340812, 12.4601145, 1]
+        BoxComponent:
+          ComponentTag: ""
+          m_Position: [0, 0, 0]
+          Rotation: [0, 0, 0]
+          Scale: [1, 1, 1]
+          BodyType: Static
+          HalfExtent: [1, 1, 1]
+        StaticMeshComponent:
+          ComponentTag: ""
+          m_Position: [0, 0, 0]
+          Rotation: [0, 0, 0]
+          Scale: [1, 1, 1]
+          Mesh: 16419860737094521997
+          Material: 0
+          bIsVisible: true
+          bCastShadows: true
+    - Actor:
+        m_TickPriority: 0
+      Components:
+        IDComponent:
+          ID: 5176928014140585771
+        NameComponent:
+          Name: Actor
+        ActorTagComponent:
+          Tag: ""
+        SceneComponent:
+          ComponentTag: ""
+          m_Position: [15.9906607, 0, -3.15488815]
+          Rotation: [0, -0, 0]
+          Scale: [1.97270775, 9.65032005, 1]
+        BoxComponent:
+          ComponentTag: ""
+          m_Position: [0, 0, 0]
+          Rotation: [0, 0, 0]
+          Scale: [1, 1, 1]
+          BodyType: Static
+          HalfExtent: [1, 1, 1]
+        StaticMeshComponent:
+          ComponentTag: ""
+          m_Position: [0, 0, 0]
+          Rotation: [0, 0, 0]
+          Scale: [1, 1, 1]
+          Mesh: 16419860737094521997
+          Material: 0
+          bIsVisible: true
+          bCastShadows: true

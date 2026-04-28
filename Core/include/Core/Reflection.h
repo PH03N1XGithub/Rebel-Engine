@@ -68,11 +68,28 @@ namespace Rebel::Core::Reflection
         // ---- Engine types ----
         Vector3,
         Asset,
+        Class,
         MaterialHandle,
     };
 
 
     struct TypeInfo; // Forward declaration for object references
+
+    template<typename T>
+    struct SubclassBaseTypeDeduce
+    {
+        static const TypeInfo* Get()
+        {
+            return nullptr;
+        }
+    };
+
+    template<typename T>
+    constexpr const TypeInfo* TryGetSubclassBaseType()
+    {
+        using CleanType = std::remove_cv_t<std::remove_reference_t<T>>;
+        return SubclassBaseTypeDeduce<CleanType>::Get();
+    }
 
     // =============================================================
     // Deduce EPropertyType from C++ type automatically
@@ -144,6 +161,7 @@ namespace Rebel::Core::Reflection
         EPropertyFlags Flags = EPropertyFlags::None;
         EPropertyType Type = EPropertyType::Unknown;
         const TypeInfo* ClassType = nullptr;
+        const TypeInfo* SubclassBaseType = nullptr;
         const EnumInfo* Enum = nullptr;
 
 
@@ -162,6 +180,7 @@ namespace Rebel::Core::Reflection
     {
         String Name;
         MemSize Size;
+        String SuperName;
         const TypeInfo* Super = nullptr;
         Memory::TArray<PropertyInfo> Properties;
 
@@ -200,26 +219,47 @@ namespace Rebel::Core::Reflection
 
             // Stable allocation
             TypeInfo* stored = new TypeInfo(info);
+            if (!stored->Super && stored->SuperName.length() > 0)
+            {
+                if (TypeInfo** superType = types.Find(stored->SuperName))
+                    stored->Super = *superType;
+            }
             types.Add(stored->Name, stored);   // key is String, value is TypeInfo*
             m_ByHash.Add(TypeHash(stored->Name.c_str()), stored);
         }
 
         const TypeInfo* GetType(const String& name)
         {
+            ResolvePendingSupers();
             TypeInfo** it = types.Find(name);
             return it ? *it : nullptr;
         }
         const TypeInfo* GetTypeByHash(uint64 hash)
         {
-            return *m_ByHash.Find(hash);
+            const TypeInfo** found = m_ByHash.Find(hash);
+            return found ? *found : nullptr;
         }
 
         const Memory::TMap<String, TypeInfo*>& GetTypes() const
         {
+            const_cast<TypeRegistry*>(this)->ResolvePendingSupers();
             return types;
         }
 
     private:
+        void ResolvePendingSupers()
+        {
+            for (auto& pair : types)
+            {
+                TypeInfo* typeInfo = pair.Value;
+                if (!typeInfo || typeInfo->Super || typeInfo->SuperName.length() == 0)
+                    continue;
+
+                if (TypeInfo** superType = types.Find(typeInfo->SuperName))
+                    typeInfo->Super = *superType;
+            }
+        }
+
         Memory::TMap<String, TypeInfo*> types;   // <--- map<String, TypeInfo*>
         Memory::TMap<uint64, const TypeInfo*> m_ByHash;
 
@@ -235,24 +275,28 @@ namespace Rebel::Core::Reflection
 // Reflection macros (DLL-safe)
 // =============================================================
 #define REFLECTABLE_CLASS(TYPE, SUPER) \
+friend struct TYPE##_ReflectionHelper; \
 public: \
-    static const Rebel::Core::Reflection::TypeInfo* StaticType() { \
-        return Rebel::Core::Reflection::TypeRegistry::Get().GetType(#TYPE); \
-    } \
-    virtual const Rebel::Core::Reflection::TypeInfo* GetType() const { \
-        return TYPE::StaticType(); \
-    }
+static const Rebel::Core::Reflection::TypeInfo* StaticType() { \
+return Rebel::Core::Reflection::TypeRegistry::Get().GetType(#TYPE); \
+} \
+virtual const Rebel::Core::Reflection::TypeInfo* GetType() const { \
+return TYPE::StaticType(); \
+}
 
 // For abstract/base classes (no factory)
 #define REFLECT_ABSTRACT_CLASS(TYPE, SUPER) \
-namespace { \
+ \
 struct TYPE##_ReflectionHelper { \
 TYPE##_ReflectionHelper() { \
 Rebel::Core::Reflection::TypeInfo info; \
 info.Name = #TYPE; \
 info.Size = sizeof(TYPE); \
 if constexpr (!std::is_same_v<SUPER, void>) { \
+info.SuperName = #SUPER; \
 info.Super = Rebel::Core::Reflection::TypeRegistry::Get().GetType(#SUPER); \
+} else { \
+info.SuperName = ""; \
 } \
 /* no factory */ \
 info.CreateInstance = nullptr; \
@@ -260,17 +304,20 @@ Rebel::Core::Reflection::TypeRegistry::Get().RegisterType(info); \
 } \
 }; \
 static TYPE##_ReflectionHelper s_##TYPE##_reflectionHelper; \
-}
+
 
 #define REFLECT_CLASS(TYPE, SUPER) \
-namespace { \
+ \
 struct TYPE##_ReflectionHelper { \
 TYPE##_ReflectionHelper() { \
 Rebel::Core::Reflection::TypeInfo info; \
 info.Name = #TYPE; \
 info.Size = sizeof(TYPE); \
 if constexpr (!std::is_same_v<SUPER, void>) { \
+info.SuperName = #SUPER; \
 info.Super = Rebel::Core::Reflection::TypeRegistry::Get().GetType(#SUPER); \
+} else { \
+info.SuperName = ""; \
 } \
 /* Add factory function for concrete classes */ \
 info.CreateInstance = []() -> void* { return new TYPE(); };
@@ -286,6 +333,7 @@ p.Size   = sizeof(((TYPE*)0)->FIELD);                                         \
 p.Flags  = FLAGS;                                                             \
 p.Type   = Rebel::Core::Reflection::PropertyTypeDeduce<FieldT>::value;        \
 p.ClassType = nullptr;                                                        \
+p.SubclassBaseType = Rebel::Core::Reflection::TryGetSubclassBaseType<FieldT>(); \
 p.Enum      = nullptr;                                                        \
 \
 if constexpr (std::is_enum_v<FieldT>)                                         \
@@ -302,7 +350,7 @@ info.Properties.Add(p);                                                       \
     } \
 }; \
 static TYPE##_ReflectionHelper s_##TYPE##_reflectionHelper; \
-}
+
 
 
 #define _ENUM_RTTI_INTERNAL_BEGIN(EnumType)                     \
@@ -331,6 +379,7 @@ _ENUM_RTTI_INTERNAL_BEGIN(EnumType)
 
 #define END_ENUM(EnumType) \
 _ENUM_RTTI_INTERNAL_END(EnumType)
+
 
 
 

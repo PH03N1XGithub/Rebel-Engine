@@ -1,5 +1,5 @@
-#include "EnginePch.h"
-#include "Animation/SkeletonAsset.h"
+﻿#include "Engine/Framework/EnginePch.h"
+#include "Engine/Animation/SkeletonAsset.h"
 #include <string>
 
 namespace
@@ -49,3 +49,5 @@ void SkeletonAsset::PostLoad()
 {
     Asset::PostLoad();
 }
+
+

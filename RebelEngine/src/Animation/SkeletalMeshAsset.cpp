@@ -1,5 +1,5 @@
-#include "EnginePch.h"
-#include "Animation/SkeletalMeshAsset.h"
+﻿#include "Engine/Framework/EnginePch.h"
+#include "Engine/Animation/SkeletalMeshAsset.h"
 
 void SkeletalMeshAsset::Serialize(BinaryWriter& ar)
 {
@@ -19,3 +19,5 @@ void SkeletalMeshAsset::PostLoad()
 {
     Asset::PostLoad();
 }
+
+
