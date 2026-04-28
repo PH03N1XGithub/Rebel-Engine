@@ -112,15 +112,15 @@ These screenshots highlight the editor workflow, debugging tools, and rendering 
 
 ### Viewport Overview
 
-<img width="1920" height="1032" alt="viewport" src="https://github.com/user-attachments/assets/8e0239fb-8ee9-49cc-9667-cbca96a73978" />
+<img width="1920" height="1032" alt="Ekran görüntüsü 2026-04-28 151630" src="https://github.com/user-attachments/assets/714c7116-b91e-4bb6-9243-8ae3f18c44b9" />
+
 Viewport rendering of a loaded scene with real-time camera navigation and editor integration.
 
 ---
 
 ### Transform Gizmo & Object Editing
 
-<img width="957" height="621" alt="gizmo" src="https://github.com/user-attachments/assets/2593b2da-0bbc-4e7c-ba60-ac9de60fa5ce" />
-
+<img width="1920" height="1032" alt="Ekran görüntüsü 2026-04-28 151742" src="https://github.com/user-attachments/assets/40f56ff0-29b3-4fe7-b7c7-232439efe2ad" />
 
 Transform gizmos and ID-buffer picking support precise actor edits directly in the viewport.
 
@@ -136,7 +136,8 @@ Skeleton debug overlay validates hierarchy import, bone transforms, and animatio
 
 ### Physics Collider Debug Visualization
 
-<img width="1920" height="1032" alt="collider_debug" src="https://github.com/user-attachments/assets/389965fe-e094-43b2-974b-ede1cc6ff38e" />
+<img width="1920" height="1032" alt="Ekran görüntüsü 2026-04-28 151846" src="https://github.com/user-attachments/assets/7cdc8bbf-e1d0-449d-bc04-9d027801ed28" />
+
 
 Collider debug rendering verifies generated physics shapes across editor and runtime inspection workflows.
 
@@ -154,15 +155,13 @@ Animation playback demonstrating runtime pose evaluation and skeletal deformatio
 
 This section showcases the current third-person gameplay foundation built on top of the Character Movement Component and Player Camera system. The setup is similar in scope to a third-person template, extended with additional movement features and responsive camera behavior.
 
-<!-- Replace with actual GIFs or images -->
-![third_person_gameplay](docs/images/gameplay_third_person.gif)
+<img width="800" height="430" alt="GameplayDemo" src="https://github.com/user-attachments/assets/2ba2fec0-0061-4797-9bd9-fd159c8219a5" />
 
 Third-person gameplay driven by the CharacterMovementComponent and PlayerCameraManager-style camera system.
 
 - Grounded movement and falling
 - Step-up and slope handling
 - Camera follow with pivot/anchor system
-- Camera collision and lag
 - Extended movement features (wall run, double jump, coyote time)
 
 ---
@@ -171,7 +170,8 @@ Third-person gameplay driven by the CharacterMovementComponent and PlayerCameraM
 
 The engine includes a runtime animation graph system used to drive locomotion and animation blending. The graph supports clip playback, blending, and state machine-driven animation flow.
 
-![anim_graph](docs/images/anim_graph.png)
+<img width="1920" height="1032" alt="Ekran görüntüsü 2026-04-28 152009" src="https://github.com/user-attachments/assets/b68764ac-af4d-4f04-9c7f-750c1ad717b2" />
+
 
 Node-based animation graph with clip, blend, and state machine nodes driving runtime animation.
 
@@ -181,11 +181,12 @@ Node-based animation graph with clip, blend, and state machine nodes driving run
 
 The animation editor provides tooling for inspecting animation clips, previewing skeletal motion, and debugging runtime animation behavior.
 
-![anim_editor](docs/images/anim_editor.png)
+<img width="1920" height="1032" alt="Ekran görüntüsü 2026-04-28 152029" src="https://github.com/user-attachments/assets/d44fb71b-19e1-4b76-aea1-64e80b64b0ce" />
+
 
 Animation asset editor with timeline, playback controls, and skeletal preview.
 
-## Editor Interaction (GIF)
+## Editor Interaction (GIF Old UI)
 
 ![editor_demo](https://github.com/user-attachments/assets/ea7b42e2-a5d3-46dd-af8c-0266b2360626)
 
