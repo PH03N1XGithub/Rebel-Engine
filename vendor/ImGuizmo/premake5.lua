@@ -20,7 +20,15 @@ project "ImGuizmo"
 
 
 
-	files { "ImGuizmo.h", "ImGuizmo.cpp" }
+	files
+	{
+		"ImGuizmo.h",
+		"ImGuizmo.cpp",
+		"GraphEditor.h",
+		"GraphEditor.cpp",
+		"ImSequencer.h",
+		"ImSequencer.cpp"
+	}
 
 	filter "system:windows"
 		systemversion "latest"
